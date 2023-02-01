@@ -1,5 +1,7 @@
 import React from 'react'
 import { Box } from '@mui/material'
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 
 // base url for player images: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/
 // example: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/203999.png -- Nikola Jokic
@@ -17,6 +19,14 @@ const Header = ({ bg }: HeaderProps) => {
 }
 
 const Home = () => {
+    const [data, setData] = useState("")
+    useEffect(() => {
+        axios.get('/api').then((data: any) => {
+            setData(data)
+        })
+    }, [])
+
+    console.log(data)
     return (
         <div>
             <Header bg={"#DCDCDC"} />
