@@ -27,3 +27,4 @@ yarn-error.log*
 /backend/include
 /backend/lib
 *.cfg
+__pycache__/
