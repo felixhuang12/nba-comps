@@ -28,10 +28,27 @@
   color: #61dafb;
 }
 
+.player_image {
+  display: block;
+  max-width: 250px;
+  max-height: 125px;
+  width: auto;
+  height: auto;
+}
+
+.team_image {
+  display: block;
+  max-width: 100px;
+  max-height: 100px;
+  width: auto;
+  height: auto;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

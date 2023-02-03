@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import Player from './Player'
@@ -10,11 +10,7 @@ import Player from './Player'
 // base url for team logos: http://global.nba.com/media/img/teams/00/logos/{team abbreviation}_logo.svg
 // example: http://global.nba.com/media/img/teams/00/logos/BOS_logo.svg -- boston celtics
 
-type HeaderProps = {
-    bg: string,
-}
-
-const Header = ({ bg }: HeaderProps) => {
+const Header = ({ bg }: {bg: string}) => {
     return (
         <Box sx={{ backgroundColor: bg, height: "70px" }} display={"flex"} justifyContent={"center"} alignItems={"center"}>
             <h1 style={{ fontSize: "24px" }}>NBA Comparisons</h1>
@@ -65,7 +61,7 @@ const Main = () => {
             }
         },
         {
-            name: "Nikola Jokic",
+            id: 203999,
             seasonStats: {
                 gp: 44,
                 pts: 1105,
@@ -99,9 +95,12 @@ const Main = () => {
     return (
         <Box>
             <Header bg={"#DCDCDC"} />
-            {players.map(player => 
-                (player.id !== undefined && <Player id={player.id} seasonStatistics={player.seasonStats} last10Statistics={player.last10} />)
-            )}
+            <Stack direction={"row"} spacing={16} justifyContent={"center"} alignItems={"flex-start"} sx={{p: 4}}>
+                {players.map(player =>
+                    (player.id !== undefined && <Player key={player.id} id={player.id} seasonStatistics={player.seasonStats} last10Statistics={player.last10} />)
+                )}
+            </Stack>
+
         </Box>
     )
 }
