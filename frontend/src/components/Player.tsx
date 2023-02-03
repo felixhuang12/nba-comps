@@ -1,30 +1,9 @@
 import React from 'react'
 import { useState } from 'react'
-import { Box, Stack } from '@mui/material'
+import { Box, Stack, Divider } from '@mui/material'
+import { Player, Stats } from '../types'
 
 // ts% = pts/(2 * (fga + (0.44 * fta)))
-
-interface Stats {
-    gp: number,
-    pts: number,
-    ast: number,
-    reb: number,
-    fg3_pct: number,
-    ft_pct: number,
-    fta: number, // for TS% calc
-    fga: number, // for TS% calc
-    fgm: number,
-    fg3a: number,
-    fg3m: number,
-    fg_pct: number
-}
-
-
-interface Player {
-    id: number,
-    seasonStatistics: Stats,
-    last10Statistics: Stats
-}
 
 const PlayerInfo = ({ playerId }: { playerId: number }) => {
     const [name, setName] = useState("Jayson Tatum") // display_first_last
@@ -62,19 +41,61 @@ const PlayerInfo = ({ playerId }: { playerId: number }) => {
 
 // }
 
-const SeasonStats = () => {
+const SeasonStats = ({ seasonStatistics }: { seasonStatistics: Stats }) => {
+    const [PPG, setPPG] = useState(Math.round(seasonStatistics.pts / seasonStatistics.gp * 10) / 10)
+    const [APG, setAPG] = useState(Math.round(seasonStatistics.ast / seasonStatistics.gp * 10) / 10)
+    const [RPG, setRPG] = useState(Math.round(seasonStatistics.reb / seasonStatistics.gp * 10) / 10)
+    const [FG3_PCT, setFG3_PCT] = useState(seasonStatistics.fg3_pct)
+    const [FT_PCT, setFT_PCT] = useState(seasonStatistics.ft_pct)
 
+    return (
+        <Box sx={{ p: 2, marginTop: 2 }} display={"flex"} alignContent={"center"} justifyContent={"center"}>
+            <Stack spacing={2}>
+                <Box>{PPG}</Box>
+                <Box>{APG}</Box>
+                <Box>{RPG}</Box>
+                <Box>{FG3_PCT}%</Box>
+                <Box>{FT_PCT}%</Box>
+            </Stack>
+        </Box>
+    )
 }
 
-const LastTenGameStats = () => {
+const LastTenGameStats = ({ last10Stats }: { last10Stats: Stats }) => {
+    const [PPG, setPPG] = useState(Math.round(last10Stats.pts / last10Stats.gp * 10) / 10)
+    const [APG, setAPG] = useState(Math.round(last10Stats.ast / last10Stats.gp * 10) / 10)
+    const [RPG, setRPG] = useState(Math.round(last10Stats.reb / last10Stats.gp * 10) / 10)
 
+    return (
+        <Box sx={{ p: 2, marginTop: 2 }} display={"flex"} alignContent={"center"} justifyContent={"center"}>
+            <Stack spacing={2}>
+                <Box>{PPG}</Box>
+                <Box>{APG}</Box>
+                <Box>{RPG}</Box>
+            </Stack>
+        </Box>
+    )
 }
 
-const ShootingPerformance = () => {
+const ShootingPerformance = ({ seasonStatistics }: { seasonStatistics: Stats }) => {
+    const [PT2_PCT, setPT2_PCT] = useState(Math.round((seasonStatistics.fgm - seasonStatistics.fg3m) * 1000 / (seasonStatistics.fga - seasonStatistics.fg3a)) / 1000)
+    const [FG3_PCT, setFG3_PCT] = useState(seasonStatistics.fg3_pct)
+    const [FG_PCT, setFG_PCT] = useState(seasonStatistics.fg_pct)
+    const [TS_PCT, setTS_PCT] = useState(Math.round(seasonStatistics.pts * 1000 / (2 * (seasonStatistics.fga + (0.44 * seasonStatistics.fta)))) / 1000)
 
+    return (
+        <Box sx={{ p: 2, marginTop: 2 }} display={"flex"} alignContent={"center"} justifyContent={"center"}>
+            <Stack spacing={2}>
+                <Box>{PT2_PCT}%</Box>
+                <Box>{FG3_PCT}%</Box>
+                <Box>{FG_PCT}%</Box>
+                <Box>{TS_PCT}%</Box>
+            </Stack>
+        </Box>
+    )
 }
 
-const Player = ({ id, seasonStatistics, last10Statistics }: Player) => {
+const PlayerCard = ({ id, seasonStatistics, last10Statistics }: Player) => {
     const [playerId, setPlayerId] = useState(id)
     const [seasonStats, setSeasonStats] = useState(seasonStatistics)
     const [last10Stats, setLast10Stats] = useState(last10Statistics)
@@ -84,10 +105,14 @@ const Player = ({ id, seasonStatistics, last10Statistics }: Player) => {
     return (
         <Box>
             <PlayerInfo playerId={playerId} />
-            {/* {seasonStats.pts}
-            {last10Stats.pts} */}
+            <Divider sx={{ borderWidth: 1, marginTop: 2 }} />
+            <SeasonStats seasonStatistics={seasonStats} />
+            <Divider sx={{ borderWidth: 1, marginTop: 2 }} />
+            <LastTenGameStats last10Stats={last10Stats} />
+            <Divider sx={{ borderWidth: 1, marginTop: 2 }} />
+            <ShootingPerformance seasonStatistics={seasonStats} />
         </Box>
     )
 }
 
-export default Player
+export default PlayerCard
