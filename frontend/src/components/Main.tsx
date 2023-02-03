@@ -3,6 +3,7 @@ import { Box, Stack } from '@mui/material'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import PlayerCard from './Player'
+import MainLogin from './Login'
 
 // base url for player images: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png
 // example: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/203999.png -- Nikola Jokic
@@ -19,14 +20,6 @@ const Header = ({ bg }: { bg: string }) => {
 }
 
 const Main = () => {
-    // const [data, setData] = useState("") // players
-    // useEffect(() => {
-    //     axios.get('/api').then((data: any) => {
-    //         setData(data)
-    //     })
-    // }, [])
-
-    // console.log(data)
 
     const players = [
         {
@@ -95,7 +88,7 @@ const Main = () => {
     return (
         <Box>
             <Header bg={"#DCDCDC"} />
-            <Stack direction={"row"} spacing={16} justifyContent={"center"} alignItems={"flex-start"} sx={{ p: 4 }}>
+            {/* <Stack direction={"row"} spacing={16} justifyContent={"center"} alignItems={"flex-start"} sx={{ p: 4 }}>
                 <Stack spacing={2} sx={{ marginTop: 30 }}>
                     <Box sx={{ backgroundColor: "lightgray", p: 1, width: "100%" }}>2022-2023 Regular Season Stats</Box>
                     <Stack spacing={2}>
@@ -122,7 +115,9 @@ const Main = () => {
                 {players.map(player =>
                     (player.id !== undefined && <PlayerCard key={player.id} id={player.id} seasonStatistics={player.seasonStats} last10Statistics={player.last10} />)
                 )}
-            </Stack>
+            </Stack> */}
+            <MainLogin />
+            {/* <Registration /> */}
         </Box>
     )
 }

@@ -2,13 +2,30 @@ import React from 'react'
 import { useState } from 'react'
 import { Box, FormControl, TextField, Stack, Button } from '@mui/material'
 
-const Login = () => {
+const MainLogin = () => {
+    const [loginVisible, setLoginVisible] = useState(true)
+    const [registerVisible, setRegisterVisible] = useState(false)
+
+    return (
+        (loginVisible
+            ? <Login visible={loginVisible} setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} />
+            : <Registration visible={registerVisible} setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} />)
+    )
+}
+
+const Login = ({ visible, setLoginVisible, setRegisterVisible }: { visible: boolean, setLoginVisible: (b: boolean) => void, setRegisterVisible: (b: boolean) => void }) => {
     const [user, setUser] = useState(null)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
+    const handleLogin = async (event: any) => {
+        event.preventDefault()
+        console.log('hello')
+        setLoginVisible(false)
+    }
+
     return (
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"} marginTop={16}>
+        <Box display={(visible ? "flex" : "none")} justifyContent={"center"} alignItems={"center"} marginTop={16}>
             <FormControl sx={{ p: 2 }}>
                 <h2>Log In</h2>
                 <Stack spacing={2}>
@@ -28,10 +45,13 @@ const Login = () => {
                         autoComplete="current-password"
                     />
                     <Stack direction="row" spacing={1}>
-                        <Button variant="outlined">
+                        <Button variant="contained" onClick={handleLogin}>
                             Login
                         </Button>
-                        <Button variant="outlined">
+                        <Button variant="outlined" onClick={() => {
+                            setRegisterVisible(true)
+                            setLoginVisible(false)
+                        }}>
                             Register
                         </Button>
                     </Stack>
@@ -41,14 +61,20 @@ const Login = () => {
     )
 }
 
-const Registration = () => {
+const Registration = ({ visible, setLoginVisible, setRegisterVisible }: { visible: boolean, setLoginVisible: (b: boolean) => void, setRegisterVisible: (b: boolean) => void }) => {
     const [newName, setNewName] = useState('')
     const [newUsername, setNewUsername] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
 
+    const handleRegister = async (event: any) => {
+        event.preventDefault()
+        console.log('hello')
+        setRegisterVisible(false)
+    }
+
     return (
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"} marginTop={8}>
+        <Box display={(visible ? "flex" : "none")} justifyContent={"center"} alignItems={"center"} marginTop={8}>
             <FormControl sx={{ p: 2 }}>
                 <h2>New User Registration</h2>
                 <Stack spacing={2}>
@@ -82,13 +108,21 @@ const Registration = () => {
                         type="password"
                         autoComplete="current-password"
                     />
-                    <Button variant="outlined">
-                        Register
-                    </Button>
+                    <Stack direction="row" spacing={1}>
+                        <Button variant="contained" onClick={handleRegister}>
+                            Register
+                        </Button>
+                        <Button variant="text" onClick={() => {
+                            setLoginVisible(true)
+                            setRegisterVisible(false)
+                        }}>
+                            Go back to login
+                        </Button>
+                    </Stack>
                 </Stack>
             </FormControl>
         </Box>
     )
 }
 
-export { Login, Registration }
+export default MainLogin
