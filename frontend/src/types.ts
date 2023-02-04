@@ -18,3 +18,13 @@ export interface Player {
     seasonStatistics: Stats,
     last10Statistics: Stats
 }
+
+export interface NewUser {
+    name: string,
+    username: string,
+    password: string
+}
+
+export interface User extends NewUser {
+    players: Player[]
+}

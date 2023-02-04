@@ -117,7 +117,6 @@ const Main = () => {
                 )}
             </Stack> */}
             <MainLogin />
-            {/* <Registration /> */}
         </Box>
     )
 }
