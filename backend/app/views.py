@@ -1,10 +1,26 @@
-from flask import Blueprint, request, json
+from flask import Blueprint, request, json, current_app, g
+from flask_pymongo import PyMongo
+from werkzeug.local import LocalProxy
 
 player_routes = Blueprint('player', __name__)
 login_routes = Blueprint('login', __name__)
 
 baseLoginUrl = '/api/login'
 # baseUserUrl =
+
+def get_db():
+    """
+    Configuration method to return db instance
+    """
+    db = getattr(g, "_database", None)
+
+    if db is None:
+
+        db = g._database = PyMongo(current_app).db
+       
+    return db
+
+db = LocalProxy(get_db)
 
 @player_routes.route('/api')
 def test():
@@ -19,6 +35,5 @@ def createUser():
     if request.method == 'POST':
         data = json.loads(request.data.decode('UTF-8'))
         print(data)
-        print(data['name'])
-        print(data['username'])
+        db.users.insert_one(data)
         return request.data
