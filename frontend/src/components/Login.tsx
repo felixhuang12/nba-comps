@@ -25,6 +25,7 @@ const Login = ({ visible, setLoginVisible, setRegisterVisible }: { visible: bool
         console.log('hello')
         setLoginVisible(false)
         setRegisterVisible(false)
+        const response = await loginService.login({ username, password })
     }
 
     return (
@@ -79,7 +80,6 @@ const Registration = ({ visible, setLoginVisible, setRegisterVisible }: { visibl
 
     const handleRegister = async (event: any) => {
         event.preventDefault()
-        console.log('register')
         setLoginVisible(true)
         setRegisterVisible(false)
         if (newPassword !== confirmPassword) {
@@ -93,7 +93,6 @@ const Registration = ({ visible, setLoginVisible, setRegisterVisible }: { visibl
                 }
                 const response = await loginService.createUser(newUser)
                 console.log(response)
-                console.log(response.data)
                 setNewName('')
                 setNewUsername('')
                 setNewPassword('')

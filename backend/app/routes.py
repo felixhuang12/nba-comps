@@ -3,12 +3,14 @@ from flask_pymongo import PyMongo
 from werkzeug.local import LocalProxy
 from .models import User
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import create_access_token
 
 player_routes = Blueprint('player', __name__)
 login_routes = Blueprint('login', __name__)
+user_routes = Blueprint('user', __name__)
 
 baseLoginUrl = '/api/login'
-# baseUserUrl =
+baseUserUrl = '/api/users'
 
 def get_db():
     """
@@ -28,23 +30,35 @@ def init_bcrypt():
 
 bcrypt = LocalProxy(init_bcrypt)
 
-@player_routes.route('/api')
-def test():
-    return ("test1")
+# def init_jwt():
+#     return JWTManager(current_app)
 
-@player_routes.route('/api/index')
-def test2():
-    return ("test2")
+# jwt = LocalProxy(init_jwt)
 
 @login_routes.route(f'{baseLoginUrl}/create', methods=['POST'])
 def createUser():
     data = json.loads(request.data.decode('UTF-8'))
-    print(data)
     existingUser = db.users.find_one({'username': data['username']})
     if existingUser:
         error = json.dumps({'error': f"A user with username {data['username']} already exists."})
-        return Response(response=error, status=400, mimetype='application/json')
+        return Response(response=error, status=400, content_type='application/json')
     passwordHash = bcrypt.generate_password_hash(password=data['password'])
     newUser = User(name=data['name'], username=data['username'], passwordHash=passwordHash)
     db.users.insert_one(dict(newUser))
-    return Response(response=request.data, status=200, mimetype='application/json')
+    return Response(response=request.data, status=200, content_type='application/json')
+
+@login_routes.route(f'{baseLoginUrl}/auth', methods=['POST'])
+def login():
+    credentials = json.loads(request.data.decode('UTF-8'))
+    existingUser = db.users.find_one({'username': credentials['username']})
+    print(existingUser)
+    if not existingUser:
+        error = json.dumps({'error': f"User {credentials['username']} does not exist."})
+        return Response(response=error, status=401, content_type='application/json')
+    validated = bcrypt.check_password_hash(existingUser['passwordHash'], credentials['password'])
+    if not validated:
+        error = json.dumps({'error': "Incorrect password."})
+        return Response(response=error, status=401, content_type='application/json')
+    access_token = create_access_token(identity=existingUser['username'])
+    return Response(response=json.dumps({ "token": access_token, "username": existingUser['username'], "name": existingUser['name']}), status=200, content_type='application/json')
+    
