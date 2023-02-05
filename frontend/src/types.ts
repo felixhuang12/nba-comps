@@ -28,3 +28,9 @@ export interface NewUser {
 export interface User extends NewUser {
     players: Player[]
 }
+
+export interface LoggedInUser {
+    name: string,
+    username: string,
+    token: string
+}

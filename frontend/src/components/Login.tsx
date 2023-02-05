@@ -1,31 +1,41 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
+import { useEffect, useState } from 'react'
 import { Box, FormControl, TextField, Stack, Button } from '@mui/material'
 import loginService from '../services/login'
-import login from '../services/login'
+import userService from '../services/user'
+import { LoggedInUser } from '../types'
+import LogoutIcon from '@mui/icons-material/Logout'
 
-const MainLogin = () => {
+type LoginProps = {
+    visible: boolean,
+    setLoginVisible: (b: boolean) => void,
+    setRegisterVisible: (b: boolean) => void,
+    setUser: (user: LoggedInUser) => void
+}
+
+const MainLogin = ({ setUser }: { setUser: (user: LoggedInUser) => void }) => {
     const [loginVisible, setLoginVisible] = useState(true)
     const [registerVisible, setRegisterVisible] = useState(false)
 
     return (
         (loginVisible
-            ? <Login visible={loginVisible} setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} />
+            ? <Login visible={loginVisible} setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} setUser={setUser} />
             : <Registration visible={registerVisible} setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} />)
     )
 }
 
-const Login = ({ visible, setLoginVisible, setRegisterVisible }: { visible: boolean, setLoginVisible: (b: boolean) => void, setRegisterVisible: (b: boolean) => void }) => {
-    const [user, setUser] = useState(null)
+const Login = ({ visible, setLoginVisible, setRegisterVisible, setUser }: LoginProps) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
     const handleLogin = async (event: any) => {
         event.preventDefault()
-        console.log('hello')
         setLoginVisible(false)
         setRegisterVisible(false)
-        const response = await loginService.login({ username, password })
+        const user = await loginService.login({ username, password }) as LoggedInUser
+        window.localStorage.setItem('loggedInNBACompsUser', JSON.stringify(user))
+        userService.setToken(user.token)
+        setUser(user)
     }
 
     return (
@@ -52,16 +62,39 @@ const Login = ({ visible, setLoginVisible, setRegisterVisible }: { visible: bool
                         <Button variant="contained" onClick={handleLogin}>
                             Login
                         </Button>
-                        <Button variant="outlined" onClick={() => {
+                        <Button variant="text" onClick={() => {
                             setRegisterVisible(true)
                             setLoginVisible(false)
                         }}>
-                            Register
+                            New? Register Here
                         </Button>
                     </Stack>
                 </Stack>
             </FormControl>
         </Box>
+    )
+}
+
+const Logout = ({ setUser }: { setUser: (user: LoggedInUser) => void }) => {
+
+    const handleLogout = () => {
+        window.localStorage.removeItem('loggedInNBACompsUser')
+        setUser({
+            name: '',
+            username: '',
+            token: ''
+        })
+        // setSuccessMessage('Logout successful')
+        // setTimeout(() => {
+        //     setSuccessMessage(null)
+        // }, 3000)
+    }
+
+    return (
+        <Button variant="contained" sx={{ alignContent: "center", textTransform: 'none', maxWidth: "100px", alignSelf: "flex-end", padding: 1, marginTop: 2, marginRight: 2 }} onClick={handleLogout}>
+            Logout
+            <LogoutIcon sx={{ paddingLeft: 1 }} fontSize={"small"}/>
+        </Button>
     )
 }
 
@@ -80,10 +113,8 @@ const Registration = ({ visible, setLoginVisible, setRegisterVisible }: { visibl
 
     const handleRegister = async (event: any) => {
         event.preventDefault()
-        setLoginVisible(true)
-        setRegisterVisible(false)
         if (newPassword !== confirmPassword) {
-            console.log('password incorrect')
+            console.log('Password incorrect')
         } else {
             try {
                 const newUser = {
@@ -93,6 +124,8 @@ const Registration = ({ visible, setLoginVisible, setRegisterVisible }: { visibl
                 }
                 const response = await loginService.createUser(newUser)
                 console.log(response)
+                setLoginVisible(true)
+                setRegisterVisible(false)
                 setNewName('')
                 setNewUsername('')
                 setNewPassword('')
@@ -163,4 +196,4 @@ const Registration = ({ visible, setLoginVisible, setRegisterVisible }: { visibl
     )
 }
 
-export default MainLogin
+export { MainLogin, Logout }

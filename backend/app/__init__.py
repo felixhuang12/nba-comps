@@ -14,5 +14,6 @@ def create_app():
     app.register_blueprint(login_routes)
     with app.app_context():
         init_bcrypt()
+        # init_jwt()
     JWTManager(app)
     return app

@@ -2,19 +2,20 @@ import axios from 'axios'
 import { NewUser } from '../types'
 const baseUrl = '/api/login'
 
-type LoginProps = {
+type Credentials = {
     username: string,
     password: string
 }
 
-const login = async (credentials: LoginProps) => {
-    const response = await axios.post(`${baseUrl}/auth`, credentials)
-    console.log(response.data)
+const createUser = async (newUser: NewUser) => {
+    console.log(newUser)
+    const response = await axios.post(`${baseUrl}/create`, newUser)
     return response.data
 }
 
-const createUser = async (newUser: NewUser) => {
-    const response = await axios.post(`${baseUrl}/create`, newUser)
+const login = async (credentials: Credentials) => {
+    const response = await axios.post(`${baseUrl}/auth`, credentials)
+    console.log(response.data)
     return response.data
 }
 

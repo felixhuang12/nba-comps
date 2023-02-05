@@ -4,6 +4,7 @@ from werkzeug.local import LocalProxy
 from .models import User
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import JWTManager
 
 player_routes = Blueprint('player', __name__)
 login_routes = Blueprint('login', __name__)
@@ -35,8 +36,13 @@ bcrypt = LocalProxy(init_bcrypt)
 
 # jwt = LocalProxy(init_jwt)
 
+@login_routes.route('/test', methods=['GET'])
+def test():
+    return('hey')
+
 @login_routes.route(f'{baseLoginUrl}/create', methods=['POST'])
 def createUser():
+    print('hit')
     data = json.loads(request.data.decode('UTF-8'))
     existingUser = db.users.find_one({'username': data['username']})
     if existingUser:
@@ -61,4 +67,3 @@ def login():
         return Response(response=error, status=401, content_type='application/json')
     access_token = create_access_token(identity=existingUser['username'])
     return Response(response=json.dumps({ "token": access_token, "username": existingUser['username'], "name": existingUser['name']}), status=200, content_type='application/json')
-    

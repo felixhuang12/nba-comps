@@ -3,7 +3,10 @@ import { Box, Stack } from '@mui/material'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import PlayerCard from './Player'
-import MainLogin from './Login'
+import { MainLogin, Logout } from './Login'
+import AddPlayerButton from './AddPlayer'
+import StatLabels from './StatLabels'
+import { LoggedInUser } from '../types'
 
 // base url for player images: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png
 // example: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/203999.png -- Nikola Jokic
@@ -20,6 +23,7 @@ const Header = ({ bg }: { bg: string }) => {
 }
 
 const Main = () => {
+    const [user, setUser] = useState(window.localStorage.getItem('loggedInNBACompsUser') as unknown as LoggedInUser)
 
     const players = [
         {
@@ -84,39 +88,58 @@ const Main = () => {
                 fg_pct: 0.452
             }
         },
+        // {
+        //     id: 203999,
+        //     seasonStats: {
+        //         gp: 44,
+        //         pts: 1105,
+        //         ast: 439,
+        //         reb: 487,
+        //         fg3_pct: 0.388,
+        //         ft_pct: 0.825,
+        //         fta: 275, // for TS% calc
+        //         fga: 664, // for TS% calc
+        //         fgm: 419,
+        //         fg3a: 103,
+        //         fg3m: 40,
+        //         fg_pct: 0.631
+        //     },
+        //     last10: {
+        //         gp: 10,
+        //         pts: 322,
+        //         ast: 52,
+        //         reb: 112,
+        //         fg3_pct: 0.376,
+        //         ft_pct: 0.907,
+        //         fta: 86, // for TS% calc
+        //         fga: 228, // for TS% calc
+        //         fgm: 103,
+        //         fg3a: 101,
+        //         fg3m: 38,
+        //         fg_pct: 0.452
+        //     }
+        // }
     ]
+
+    console.log(user)
+
     return (
         <Box>
             <Header bg={"#DCDCDC"} />
-            {/* <Stack direction={"row"} spacing={16} justifyContent={"center"} alignItems={"flex-start"} sx={{ p: 4 }}>
-                <Stack spacing={2} sx={{ marginTop: 30 }}>
-                    <Box sx={{ backgroundColor: "lightgray", p: 1, width: "100%" }}>2022-2023 Regular Season Stats</Box>
-                    <Stack spacing={2}>
-                        <Box>PPG</Box>
-                        <Box>APG</Box>
-                        <Box>RPG</Box>
-                        <Box>3P%</Box>
-                        <Box>FT%</Box>
+            {user !== null && Object.keys(user).length !== 0 && user.username !== ''
+                ? (
+                    <Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"}>
+                        <Logout setUser={setUser} />
+                        <Stack direction={"row"} spacing={16} justifyContent={"center"} sx={{ p: 4 }}>
+                            <StatLabels />
+                            {players === null ? <AddPlayerButton /> : players.map(player =>
+                                (player.id !== undefined && <PlayerCard key={player.id} id={player.id} seasonStatistics={player.seasonStats} last10Statistics={player.last10} />)
+                            )}
+                        </Stack>
                     </Stack>
-                    <Box sx={{ backgroundColor: "lightgray", p: 1, width: "100%" }}>Last 10 Games</Box>
-                    <Stack spacing={2}>
-                        <Box>PPG</Box>
-                        <Box>APG</Box>
-                        <Box>RPG</Box>
-                    </Stack>
-                    <Box sx={{ backgroundColor: "lightgray", p: 1, width: "100%" }}>Season Shooting Percentages</Box>
-                    <Stack spacing={2}>
-                        <Box>2-Point</Box>
-                        <Box>3-Point</Box>
-                        <Box>Total</Box>
-                        <Box>True Shooting</Box>
-                    </Stack>
-                </Stack>
-                {players.map(player =>
-                    (player.id !== undefined && <PlayerCard key={player.id} id={player.id} seasonStatistics={player.seasonStats} last10Statistics={player.last10} />)
-                )}
-            </Stack> */}
-            <MainLogin />
+
+                )
+                : <MainLogin setUser={setUser} />}
         </Box>
     )
 }
