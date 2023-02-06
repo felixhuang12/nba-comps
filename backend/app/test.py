@@ -3,6 +3,7 @@ from nba_api.stats.endpoints import playergamelog
 from nba_api.stats.endpoints import playerdashboardbylastngames
 from nba_api.stats.endpoints import commonplayerinfo
 from nba_api.stats.static import players
+from nba_api_client import DataRetriever as NBA
 
 # Jayson Tatum
 # career
@@ -18,9 +19,9 @@ from nba_api.stats.static import players
 
 # Nikola Jokic
 # career
-nj_career = playercareerstats.PlayerCareerStats(player_id='203999')
-nj_df = nj_career.get_data_frames()[0]
-print(nj_df)
+# nj_career = playercareerstats.PlayerCareerStats(player_id='203999')
+# nj_df = nj_career.get_data_frames()[0]
+# print(nj_df)
 
 # last 10 games
 
@@ -30,8 +31,18 @@ print(nj_df)
 
 # scoping commonplayerinfo api
 # jt_info = commonplayerinfo.CommonPlayerInfo(player_id="1628369")
-# print(jt_info.common_player_info.get_data_frame().to_string())
+# df = jt_info.common_player_info.get_data_frame()
+# print(df.iloc[0][1])
+# print(type(df))
 
 # players api -- for use in search query when adding players
 # result = players.find_players_by_full_name("James")
 # print(result)
+
+# testing NBADataRetriever
+nba = NBA()
+# nba.getCommonPlayerInfos(playerIDs=['203999', '1628369'])
+# nba.getIndividualPlayerStatAverages(playerID='1628369')
+# nba.getAllPlayersStatAverages(playerIDs=['203999', '1628369'])
+# nba.getIndividualPlayerLast10GamesStatAverages(playerID='1628369')
+# nba.getAllPlayersLast10GamesStatAverages(playerIDs=['203999', '1628369'])

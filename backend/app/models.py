@@ -13,6 +13,7 @@ class Player(BaseModel):
     ppg: float
     apg: float
     rpg: float
+    fg_pct: float
     fg2_pct: float
     fg3_pct: float
     ft_pct: float

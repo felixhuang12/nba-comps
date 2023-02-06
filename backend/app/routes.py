@@ -67,3 +67,8 @@ def login():
         return Response(response=error, status=401, content_type='application/json')
     access_token = create_access_token(identity=existingUser['username'])
     return Response(response=json.dumps({ "token": access_token, "username": existingUser['username'], "name": existingUser['name']}), status=200, content_type='application/json')
+
+@user_routes.route(f'{baseUserUrl}/<username>')
+def getPlayers(username: str):
+    user = db.users.find_one({'username': username})
+    return Response(response=json.dumps({"username": user['username'], "players": user['players']}))

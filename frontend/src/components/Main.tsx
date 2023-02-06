@@ -7,6 +7,7 @@ import { MainLogin, Logout } from './Login'
 import AddPlayerButton from './AddPlayer'
 import StatLabels from './StatLabels'
 import { LoggedInUser } from '../types'
+import userService from '../services/user'
 
 // base url for player images: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png
 // example: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/203999.png -- Nikola Jokic
@@ -24,8 +25,18 @@ const Header = ({ bg }: { bg: string }) => {
 
 const Main = () => {
     const [user, setUser] = useState(window.localStorage.getItem('loggedInNBACompsUser') as unknown as LoggedInUser)
+    const [players, setPlayers] = useState([])
 
-    const players = [
+    useEffect(() => {
+        if (user !== null && user.username !== '')
+            userService.getPlayers(user).then((user_players) => {
+                setPlayers(user_players.players)
+            })
+    }, [user])
+
+    console.log(players)
+
+    const testPlayers = [
         {
             id: 1628369,
             seasonStats: {
@@ -127,18 +138,15 @@ const Main = () => {
         <Box>
             <Header bg={"#DCDCDC"} />
             {user !== null && Object.keys(user).length !== 0 && user.username !== ''
-                ? (
-                    <Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"}>
+                ? (<Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"}>
                         <Logout setUser={setUser} />
                         <Stack direction={"row"} spacing={16} justifyContent={"center"} sx={{ p: 4 }}>
                             <StatLabels />
-                            {players === null ? <AddPlayerButton /> : players.map(player =>
+                            {testPlayers === null ? <AddPlayerButton /> : testPlayers.map(player =>
                                 (player.id !== undefined && <PlayerCard key={player.id} id={player.id} seasonStatistics={player.seasonStats} last10Statistics={player.last10} />)
                             )}
                         </Stack>
-                    </Stack>
-
-                )
+                    </Stack>) 
                 : <MainLogin setUser={setUser} />}
         </Box>
     )

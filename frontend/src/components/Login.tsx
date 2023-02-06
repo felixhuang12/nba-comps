@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React from 'react'
 import { useEffect, useState } from 'react'
 import { Box, FormControl, TextField, Stack, Button } from '@mui/material'
 import loginService from '../services/login'
@@ -93,7 +93,7 @@ const Logout = ({ setUser }: { setUser: (user: LoggedInUser) => void }) => {
     return (
         <Button variant="contained" sx={{ alignContent: "center", textTransform: 'none', maxWidth: "100px", alignSelf: "flex-end", padding: 1, marginTop: 2, marginRight: 2 }} onClick={handleLogout}>
             Logout
-            <LogoutIcon sx={{ paddingLeft: 1 }} fontSize={"small"}/>
+            <LogoutIcon sx={{ paddingLeft: 1 }} fontSize={"small"} />
         </Button>
     )
 }
