@@ -1,20 +1,25 @@
 export interface Stats {
-    gp: number,
-    pts: number,
-    ast: number,
-    reb: number,
+    ppg: number,
+    apg: number,
+    rpg: number,
+    fg_pct: number,
+    fg2_pct: number,
     fg3_pct: number,
     ft_pct: number,
-    fta: number, // for TS% calc
-    fga: number, // for TS% calc
-    fgm: number,
-    fg3a: number,
-    fg3m: number,
-    fg_pct: number
+    ts_pct: number
+}
+
+export interface CommonPlayerInfo {
+    id: number,
+    name: string,
+    position: string,
+    teamAbbv: string,
+    jerseyNum: number
 }
 
 export interface Player {
     id: number,
+    commonPlayerInfo: CommonPlayerInfo
     seasonStatistics: Stats,
     last10Statistics: Stats
 }

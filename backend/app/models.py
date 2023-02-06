@@ -1,9 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-class PlayerID(BaseModel):
-    id: int
-
 class Player(BaseModel):
     id: int
     name: str
@@ -27,4 +24,4 @@ class User(BaseModel):
     name: str
     username: str
     passwordHash: str
-    players: Optional[List[PlayerID]] = []
+    players: Optional[List[Player]] = []

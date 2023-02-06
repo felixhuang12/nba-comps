@@ -1,12 +1,11 @@
 import React from 'react'
 import { Box, Stack } from '@mui/material'
-import axios from 'axios'
 import { useState, useEffect } from 'react'
 import PlayerCard from './Player'
 import { MainLogin, Logout } from './Login'
 import AddPlayerButton from './AddPlayer'
 import StatLabels from './StatLabels'
-import { LoggedInUser } from '../types'
+import { LoggedInUser, Player } from '../types'
 import userService from '../services/user'
 
 // base url for player images: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png
@@ -24,113 +23,21 @@ const Header = ({ bg }: { bg: string }) => {
 }
 
 const Main = () => {
-    const [user, setUser] = useState(window.localStorage.getItem('loggedInNBACompsUser') as unknown as LoggedInUser)
-    const [players, setPlayers] = useState([])
+    const [user, setUser] = useState({} as LoggedInUser)
+    const [players, setPlayers] = useState([] as Player[])
 
     useEffect(() => {
-        if (user !== null && user.username !== '')
+        const cache = window.localStorage.getItem('loggedInNBACompsUser')
+        if (cache)
+            setUser(JSON.parse(cache))
+    }, [])
+
+    useEffect(() => {
+        if (user !== null && Object.keys(user).length !== 0 && user.username !== '')
             userService.getPlayers(user).then((user_players) => {
                 setPlayers(user_players.players)
             })
     }, [user])
-
-    console.log(players)
-
-    const testPlayers = [
-        {
-            id: 1628369,
-            seasonStats: {
-                gp: 49,
-                pts: 1524,
-                ast: 216,
-                reb: 428,
-                fg3_pct: 0.357,
-                ft_pct: 0.869,
-                fta: 421, // for TS% calc
-                fga: 1063, // for TS% calc
-                fgm: 497,
-                fg3a: 460,
-                fg3m: 164,
-                fg_pct: 0.468
-            },
-            last10: {
-                gp: 10,
-                pts: 322,
-                ast: 52,
-                reb: 112,
-                fg3_pct: 0.376,
-                ft_pct: 0.907,
-                fta: 86, // for TS% calc
-                fga: 228, // for TS% calc
-                fgm: 103,
-                fg3a: 101,
-                fg3m: 38,
-                fg_pct: 0.452
-            }
-        },
-        {
-            id: 203999,
-            seasonStats: {
-                gp: 44,
-                pts: 1105,
-                ast: 439,
-                reb: 487,
-                fg3_pct: 0.388,
-                ft_pct: 0.825,
-                fta: 275, // for TS% calc
-                fga: 664, // for TS% calc
-                fgm: 419,
-                fg3a: 103,
-                fg3m: 40,
-                fg_pct: 0.631
-            },
-            last10: {
-                gp: 10,
-                pts: 322,
-                ast: 52,
-                reb: 112,
-                fg3_pct: 0.376,
-                ft_pct: 0.907,
-                fta: 86, // for TS% calc
-                fga: 228, // for TS% calc
-                fgm: 103,
-                fg3a: 101,
-                fg3m: 38,
-                fg_pct: 0.452
-            }
-        },
-        // {
-        //     id: 203999,
-        //     seasonStats: {
-        //         gp: 44,
-        //         pts: 1105,
-        //         ast: 439,
-        //         reb: 487,
-        //         fg3_pct: 0.388,
-        //         ft_pct: 0.825,
-        //         fta: 275, // for TS% calc
-        //         fga: 664, // for TS% calc
-        //         fgm: 419,
-        //         fg3a: 103,
-        //         fg3m: 40,
-        //         fg_pct: 0.631
-        //     },
-        //     last10: {
-        //         gp: 10,
-        //         pts: 322,
-        //         ast: 52,
-        //         reb: 112,
-        //         fg3_pct: 0.376,
-        //         ft_pct: 0.907,
-        //         fta: 86, // for TS% calc
-        //         fga: 228, // for TS% calc
-        //         fgm: 103,
-        //         fg3a: 101,
-        //         fg3m: 38,
-        //         fg_pct: 0.452
-        //     }
-        // }
-    ]
 
     console.log(user)
 
@@ -139,17 +46,115 @@ const Main = () => {
             <Header bg={"#DCDCDC"} />
             {user !== null && Object.keys(user).length !== 0 && user.username !== ''
                 ? (<Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"}>
-                        <Logout setUser={setUser} />
-                        <Stack direction={"row"} spacing={16} justifyContent={"center"} sx={{ p: 4 }}>
-                            <StatLabels />
-                            {testPlayers === null ? <AddPlayerButton /> : testPlayers.map(player =>
-                                (player.id !== undefined && <PlayerCard key={player.id} id={player.id} seasonStatistics={player.seasonStats} last10Statistics={player.last10} />)
-                            )}
-                        </Stack>
-                    </Stack>) 
+                    <Logout setUser={setUser} />
+                    <Stack direction={"row"} spacing={16} justifyContent={"center"} sx={{ p: 4 }}>
+                        {testPlayers.length !== 0 && <StatLabels />}
+                        {testPlayers.map((player: Player) => (player.id !== undefined &&
+                            <PlayerCard key={player.id}
+                                id={player.id}
+                                commonPlayerInfo={player.commonPlayerInfo}
+                                seasonStatistics={player.seasonStatistics}
+                                last10Statistics={player.last10Statistics} />)
+                        )}
+                        {testPlayers.length < 3 && <AddPlayerButton />}
+                    </Stack>
+                </Stack>)
                 : <MainLogin setUser={setUser} />}
         </Box>
     )
 }
+
+const testPlayers: Player[] = [
+    {
+        id: 1628369,
+        commonPlayerInfo: {
+            id: 1628369,
+            name: "Jayson Tatum",
+            position: "Forward / Guard",
+            teamAbbv: "BOS",
+            jerseyNum: 0
+        },
+        seasonStatistics: {
+            ppg: 30.9,
+            apg: 4.4,
+            rpg: 8.7,
+            fg_pct: 46.4,
+            fg2_pct: 54.8,
+            fg3_pct: 35.5,
+            ft_pct: 87.1,
+            ts_pct: 60.9
+        },
+        last10Statistics: {
+            ppg: 31.1,
+            apg: 5.3,
+            rpg: 10.8,
+            fg_pct: 43.4,
+            fg2_pct: 49.2,
+            fg3_pct: 36.9,
+            ft_pct: 92.0,
+            ts_pct: 59.9
+        }
+    },
+    {
+        id: 203999,
+        commonPlayerInfo: {
+            id: 203999,
+            name: "Nikola Jokic",
+            position: "Center",
+            teamAbbv: "DEN",
+            jerseyNum: 15
+        },
+        seasonStatistics: {
+            ppg: 24.8,
+            apg: 10.1,
+            rpg: 11.3,
+            fg_pct: 63.2,
+            fg2_pct: 67.6,
+            fg3_pct: 38.5,
+            ft_pct: 63.2,
+            ts_pct: 70.4
+        },
+        last10Statistics: {
+            ppg: 23.0,
+            apg: 12.2,
+            rpg: 13.1,
+            fg_pct: 71.7,
+            fg2_pct: 75.5,
+            fg3_pct: 47.1,
+            ft_pct: 71.7,
+            ts_pct: 78.1
+        }
+    },
+    {
+        id: 1628378,
+        commonPlayerInfo: {
+            id: 1628378,
+            name: "Donovan Mitchell",
+            position: "Guard",
+            teamAbbv: "CLE",
+            jerseyNum: 45
+        },
+        seasonStatistics: {
+            ppg: 26.9,
+            apg: 4.9,
+            rpg: 3.8,
+            fg_pct: 47.2,
+            fg2_pct: 55.0,
+            fg3_pct: 38.7,
+            ft_pct: 86.9,
+            ts_pct: 61.0
+        },
+        last10Statistics: {
+            ppg: 19.5,
+            apg: 4.8,
+            rpg: 3.4,
+            fg_pct: 41.0,
+            fg2_pct: 52.7,
+            fg3_pct: 31.5,
+            ft_pct: 85.7,
+            ts_pct: 53.7
+        }
+    }
+]
 
 export default Main

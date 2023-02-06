@@ -1,5 +1,5 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import {useState } from 'react'
 import { Box, FormControl, TextField, Stack, Button } from '@mui/material'
 import loginService from '../services/login'
 import userService from '../services/user'
@@ -79,11 +79,7 @@ const Logout = ({ setUser }: { setUser: (user: LoggedInUser) => void }) => {
 
     const handleLogout = () => {
         window.localStorage.removeItem('loggedInNBACompsUser')
-        setUser({
-            name: '',
-            username: '',
-            token: ''
-        })
+        setUser({} as LoggedInUser)
         // setSuccessMessage('Logout successful')
         // setTimeout(() => {
         //     setSuccessMessage(null)
@@ -91,9 +87,12 @@ const Logout = ({ setUser }: { setUser: (user: LoggedInUser) => void }) => {
     }
 
     return (
-        <Button variant="contained" sx={{ alignContent: "center", textTransform: 'none', maxWidth: "100px", alignSelf: "flex-end", padding: 1, marginTop: 2, marginRight: 2 }} onClick={handleLogout}>
+        <Button
+            variant="contained"
+            sx={{ alignContent: "center", textTransform: 'none', maxWidth: "100px", alignSelf: "flex-end", marginTop: 2, marginRight: 2 }}
+            onClick={handleLogout}
+            endIcon={<LogoutIcon />}>
             Logout
-            <LogoutIcon sx={{ paddingLeft: 1 }} fontSize={"small"} />
         </Button>
     )
 }
@@ -103,13 +102,6 @@ const Registration = ({ visible, setLoginVisible, setRegisterVisible }: { visibl
     const [newUsername, setNewUsername] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
-
-    useEffect(() => {
-        // loginService.test().then((data: any) => {
-        //     console.log('hit api')
-        //     console.log(data)
-        // })
-    }, [])
 
     const handleRegister = async (event: any) => {
         event.preventDefault()

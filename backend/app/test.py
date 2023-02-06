@@ -36,13 +36,18 @@ from nba_api_client import DataRetriever as NBA
 # print(type(df))
 
 # players api -- for use in search query when adding players
-# result = players.find_players_by_full_name("James")
+# result = players.find_players_by_full_name("Donovan Mitchell")
 # print(result)
 
 # testing NBADataRetriever
 nba = NBA()
-# nba.getCommonPlayerInfos(playerIDs=['203999', '1628369'])
-# nba.getIndividualPlayerStatAverages(playerID='1628369')
-# nba.getAllPlayersStatAverages(playerIDs=['203999', '1628369'])
-# nba.getIndividualPlayerLast10GamesStatAverages(playerID='1628369')
-# nba.getAllPlayersLast10GamesStatAverages(playerIDs=['203999', '1628369'])
+print(nba.getCommonPlayerInfo(playerID='1628378'))
+# print(nba.getCommonPlayerInfos(playerIDs=['203999', '1628369']))
+# print(nba.getIndividualPlayerStatAverages(playerID='1628369'))
+# print(nba.getIndividualPlayerStatAverages(playerID='203999'))
+print(nba.getIndividualPlayerStatAverages(playerID='1628378'))
+# print(nba.getAllPlayersStatAverages(playerIDs=['203999', '1628369']))
+# print(nba.getIndividualPlayerLast10GamesStatAverages(playerID='1628369'))
+print(nba.getIndividualPlayerLast10GamesStatAverages(playerID='1628378'))
+# print(nba.getIndividualPlayerLast10GamesStatAverages(playerID='203999'))
+# print(nba.getAllPlayersLast10GamesStatAverages(playerIDs=['203999', '1628369']))

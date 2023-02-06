@@ -71,4 +71,5 @@ def login():
 @user_routes.route(f'{baseUserUrl}/<username>')
 def getPlayers(username: str):
     user = db.users.find_one({'username': username})
+    print(user)
     return Response(response=json.dumps({"username": user['username'], "players": user['players']}))
