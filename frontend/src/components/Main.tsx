@@ -7,6 +7,8 @@ import AddPlayerButton from './AddPlayer'
 import StatLabels from './StatLabels'
 import { LoggedInUser, Player } from '../types'
 import userService from '../services/user'
+import Notification from './Notification'
+import { useStateValue } from '../state/state'
 
 // base url for player images: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png
 // example: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/203999.png -- Nikola Jokic
@@ -23,31 +25,32 @@ const Header = ({ bg }: { bg: string }) => {
 }
 
 const Main = () => {
-    const [user, setUser] = useState({} as LoggedInUser)
+    const [state, dispatch] = useStateValue()
     const [players, setPlayers] = useState([] as Player[])
 
     useEffect(() => {
         const cache = window.localStorage.getItem('loggedInNBACompsUser')
         if (cache)
-            setUser(JSON.parse(cache))
+            dispatch({ type: "SET_LOGGED_IN_USER", payload: JSON.parse(cache) })
     }, [])
 
     useEffect(() => {
-        if (user !== null && Object.keys(user).length !== 0 && user.username !== '')
-            userService.getPlayers(user).then((user_players) => {
+        if (state.user !== null && Object.keys(state.user).length !== 0 && state.user.username !== '')
+            userService.getPlayers(state.user).then((user_players) => {
                 setPlayers(user_players.players)
             })
-    }, [user])
+    }, [dispatch])
 
-    console.log(user)
+    console.log(state.user)
 
     return (
         <Box>
             <Header bg={"#DCDCDC"} />
-            {user !== null && Object.keys(user).length !== 0 && user.username !== ''
+            <Notification />
+            {state.user !== null && state.user !== undefined && Object.keys(state.user).length !== 0 && state.user.username !== ''
                 ? (<Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"}>
-                    <Logout setUser={setUser} />
-                    <Stack direction={"row"} spacing={16} justifyContent={"center"} sx={{ p: 4 }}>
+                    <Logout />
+                    <Stack direction={"row"} spacing={16} justifyContent={"center"} alignItems={"flex-start"} sx={{ p: 4 }}>
                         {testPlayers.length !== 0 && <StatLabels />}
                         {testPlayers.map((player: Player) => (player.id !== undefined &&
                             <PlayerCard key={player.id}
@@ -59,7 +62,7 @@ const Main = () => {
                         {testPlayers.length < 3 && <AddPlayerButton />}
                     </Stack>
                 </Stack>)
-                : <MainLogin setUser={setUser} />}
+                : <MainLogin />}
         </Box>
     )
 }
@@ -125,36 +128,36 @@ const testPlayers: Player[] = [
             ts_pct: 78.1
         }
     },
-    {
-        id: 1628378,
-        commonPlayerInfo: {
-            id: 1628378,
-            name: "Donovan Mitchell",
-            position: "Guard",
-            teamAbbv: "CLE",
-            jerseyNum: 45
-        },
-        seasonStatistics: {
-            ppg: 26.9,
-            apg: 4.9,
-            rpg: 3.8,
-            fg_pct: 47.2,
-            fg2_pct: 55.0,
-            fg3_pct: 38.7,
-            ft_pct: 86.9,
-            ts_pct: 61.0
-        },
-        last10Statistics: {
-            ppg: 19.5,
-            apg: 4.8,
-            rpg: 3.4,
-            fg_pct: 41.0,
-            fg2_pct: 52.7,
-            fg3_pct: 31.5,
-            ft_pct: 85.7,
-            ts_pct: 53.7
-        }
-    }
+    // {
+    //     id: 1628378,
+    //     commonPlayerInfo: {
+    //         id: 1628378,
+    //         name: "Donovan Mitchell",
+    //         position: "Guard",
+    //         teamAbbv: "CLE",
+    //         jerseyNum: 45
+    //     },
+    //     seasonStatistics: {
+    //         ppg: 26.9,
+    //         apg: 4.9,
+    //         rpg: 3.8,
+    //         fg_pct: 47.2,
+    //         fg2_pct: 55.0,
+    //         fg3_pct: 38.7,
+    //         ft_pct: 86.9,
+    //         ts_pct: 61.0
+    //     },
+    //     last10Statistics: {
+    //         ppg: 19.5,
+    //         apg: 4.8,
+    //         rpg: 3.4,
+    //         fg_pct: 41.0,
+    //         fg2_pct: 52.7,
+    //         fg3_pct: 31.5,
+    //         ft_pct: 85.7,
+    //         ts_pct: 53.7
+    //     }
+    // }
 ]
 
 export default Main

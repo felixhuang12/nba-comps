@@ -6,7 +6,13 @@ const AddPlayerButton = () => {
     return (
         <Button 
         variant={'contained'} 
-        sx={{ textTransform: 'none', backgroundColor: "#DCDCDC", color: "black", ":hover": { backgroundColor: "lightgray" } }} 
+        sx={{ 
+            textTransform: 'none', 
+            backgroundColor: "#DCDCDC", 
+            color: "black", 
+            ":hover": { backgroundColor: "lightgray" },
+            maxHeight: '75px' 
+        }} 
         onClick={() => console.log('add clicked')} 
         endIcon={<AddIcon />}>
             Add Player

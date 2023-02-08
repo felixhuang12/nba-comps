@@ -30,8 +30,8 @@ export interface NewUser {
     password: string
 }
 
-export interface User extends NewUser {
-    players: Player[]
+export interface User extends LoggedInUser {
+    players?: Player[]
 }
 
 export interface LoggedInUser {

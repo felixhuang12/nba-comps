@@ -1,41 +1,59 @@
 import React from 'react'
-import {useState } from 'react'
+import { useState } from 'react'
 import { Box, FormControl, TextField, Stack, Button } from '@mui/material'
 import loginService from '../services/login'
 import userService from '../services/user'
 import { LoggedInUser } from '../types'
 import LogoutIcon from '@mui/icons-material/Logout'
+import { AxiosError } from 'axios'
+import { useStateValue } from '../state/state'
 
-type LoginProps = {
+// interface LoginProps extends RegistrationProps {
+//     setUser?: (user: LoggedInUser) => void
+// }
+
+interface AccountPageProps {
     visible: boolean,
     setLoginVisible: (b: boolean) => void,
     setRegisterVisible: (b: boolean) => void,
-    setUser: (user: LoggedInUser) => void
 }
 
-const MainLogin = ({ setUser }: { setUser: (user: LoggedInUser) => void }) => {
+const MainLogin = () => {
     const [loginVisible, setLoginVisible] = useState(true)
     const [registerVisible, setRegisterVisible] = useState(false)
 
     return (
-        (loginVisible
-            ? <Login visible={loginVisible} setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} setUser={setUser} />
-            : <Registration visible={registerVisible} setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} />)
+        <Box>
+            {loginVisible
+                ? <Login visible={loginVisible} setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} />
+                : <Registration visible={registerVisible} setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} />}
+        </Box>
+
     )
 }
 
-const Login = ({ visible, setLoginVisible, setRegisterVisible, setUser }: LoginProps) => {
+const Login = ({ visible, setLoginVisible, setRegisterVisible }: AccountPageProps) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [, dispatch] = useStateValue()
 
     const handleLogin = async (event: any) => {
         event.preventDefault()
-        setLoginVisible(false)
-        setRegisterVisible(false)
-        const user = await loginService.login({ username, password }) as LoggedInUser
-        window.localStorage.setItem('loggedInNBACompsUser', JSON.stringify(user))
-        userService.setToken(user.token)
-        setUser(user)
+        try {
+            const user = await loginService.login({ username, password }) as LoggedInUser
+            dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Success! Logged in.", alertType: 'success' } })
+            dispatch({ type: "SET_LOGGED_IN_USER", payload: user })
+            window.localStorage.setItem('loggedInNBACompsUser', JSON.stringify(user))
+            userService.setToken(user.token)
+        } catch (error: unknown) {
+            let message = null
+            if (error instanceof AxiosError) {
+                message = error?.response?.data.error
+            } else {
+                message = "Something went wrong."
+            }
+            dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: message, alertType: 'error' } })
+        }
     }
 
     return (
@@ -75,15 +93,13 @@ const Login = ({ visible, setLoginVisible, setRegisterVisible, setUser }: LoginP
     )
 }
 
-const Logout = ({ setUser }: { setUser: (user: LoggedInUser) => void }) => {
+const Logout = () => {
+    const [, dispatch] = useStateValue()
 
     const handleLogout = () => {
         window.localStorage.removeItem('loggedInNBACompsUser')
-        setUser({} as LoggedInUser)
-        // setSuccessMessage('Logout successful')
-        // setTimeout(() => {
-        //     setSuccessMessage(null)
-        // }, 3000)
+        dispatch({ type: "SET_LOGGED_IN_USER", payload: {} as LoggedInUser })
+        dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Logged out successfully.", alertType: 'success' } })
     }
 
     return (
@@ -97,16 +113,17 @@ const Logout = ({ setUser }: { setUser: (user: LoggedInUser) => void }) => {
     )
 }
 
-const Registration = ({ visible, setLoginVisible, setRegisterVisible }: { visible: boolean, setLoginVisible: (b: boolean) => void, setRegisterVisible: (b: boolean) => void }) => {
+const Registration = ({ visible, setLoginVisible, setRegisterVisible }: AccountPageProps) => {
     const [newName, setNewName] = useState('')
     const [newUsername, setNewUsername] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [, dispatch] = useStateValue()
 
     const handleRegister = async (event: any) => {
         event.preventDefault()
         if (newPassword !== confirmPassword) {
-            console.log('Password incorrect')
+            dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Passwords do not match.", alertType: 'error' } })
         } else {
             try {
                 const newUser = {
@@ -122,16 +139,15 @@ const Registration = ({ visible, setLoginVisible, setRegisterVisible }: { visibl
                 setNewUsername('')
                 setNewPassword('')
                 setConfirmPassword('')
-                // setSuccessMessage(`Blog account with username ${response.username} created.`)
-                // setTimeout(() => {
-                //     setSuccessMessage(null)
-                // }, 3000)
+                dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Account successfully created!", alertType: 'success' } })
             } catch (error: unknown) {
-                // setErrorMessage(error.response.data.error)
-                // setTimeout(() => {
-                //     setErrorMessage(null)
-                // }, 3000)
-                console.log(error)
+                let message = null
+                if (error instanceof AxiosError) {
+                    message = error?.response?.data.error
+                } else {
+                    message = "Something went wrong."
+                }
+                dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: message, alertType: 'error' } })
             }
         }
     }
