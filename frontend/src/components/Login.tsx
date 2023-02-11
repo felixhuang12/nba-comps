@@ -49,7 +49,8 @@ const Login = ({ visible, setLoginVisible, setRegisterVisible }: AccountPageProp
             let message = null
             if (error instanceof AxiosError) {
                 message = error?.response?.data.error
-            } else {
+            }
+            if (message == null || message === '') {
                 message = "Something went wrong."
             }
             dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: message, alertType: 'error' } })
@@ -144,7 +145,8 @@ const Registration = ({ visible, setLoginVisible, setRegisterVisible }: AccountP
                 let message = null
                 if (error instanceof AxiosError) {
                     message = error?.response?.data.error
-                } else {
+                }
+                if (message == null || message === '') {
                     message = "Something went wrong."
                 }
                 dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: message, alertType: 'error' } })

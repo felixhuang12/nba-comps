@@ -37,17 +37,20 @@ from nba_api_client import DataRetriever as NBA
 
 # players api -- for use in search query when adding players
 # result = players.find_players_by_full_name("Donovan Mitchell")
+# result = players.get_active_players()
 # print(result)
 
 # testing NBADataRetriever
 nba = NBA()
-print(nba.getCommonPlayerInfo(playerID='1628378'))
-# print(nba.getCommonPlayerInfos(playerIDs=['203999', '1628369']))
+print(nba.getCommonPlayerInfo(playerID="1628378"))
+# print(nba.getCommonPlayerInfos(playerIDs=[203999, 1628369]))
 # print(nba.getIndividualPlayerStatAverages(playerID='1628369'))
 # print(nba.getIndividualPlayerStatAverages(playerID='203999'))
-print(nba.getIndividualPlayerStatAverages(playerID='1628378'))
+# print(nba.getIndividualPlayerStatAverages(playerID='1628378'))
 # print(nba.getAllPlayersStatAverages(playerIDs=['203999', '1628369']))
 # print(nba.getIndividualPlayerLast10GamesStatAverages(playerID='1628369'))
-print(nba.getIndividualPlayerLast10GamesStatAverages(playerID='1628378'))
+# print(nba.getIndividualPlayerLast10GamesStatAverages(playerID='1628378'))
 # print(nba.getIndividualPlayerLast10GamesStatAverages(playerID='203999'))
 # print(nba.getAllPlayersLast10GamesStatAverages(playerIDs=['203999', '1628369']))
+print(nba.getAggregatePlayerInfo(playerID=1628378))
+print(type(nba.getAggregatePlayerInfo(playerID=1628378)))

@@ -5,7 +5,7 @@ import PlayerCard from './Player'
 import { MainLogin, Logout } from './Login'
 import AddPlayerButton from './AddPlayer'
 import StatLabels from './StatLabels'
-import { LoggedInUser, Player } from '../types'
+import { Player } from '../types'
 import userService from '../services/user'
 import Notification from './Notification'
 import { useStateValue } from '../state/state'
@@ -32,14 +32,14 @@ const Main = () => {
         const cache = window.localStorage.getItem('loggedInNBACompsUser')
         if (cache)
             dispatch({ type: "SET_LOGGED_IN_USER", payload: JSON.parse(cache) })
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         if (state.user !== null && Object.keys(state.user).length !== 0 && state.user.username !== '')
             userService.getPlayers(state.user).then((user_players) => {
                 setPlayers(user_players.players)
             })
-    }, [dispatch])
+    }, [state.user, dispatch])
 
     console.log(state.user)
 
@@ -51,15 +51,15 @@ const Main = () => {
                 ? (<Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"}>
                     <Logout />
                     <Stack direction={"row"} spacing={16} justifyContent={"center"} alignItems={"flex-start"} sx={{ p: 4 }}>
-                        {testPlayers.length !== 0 && <StatLabels />}
-                        {testPlayers.map((player: Player) => (player.id !== undefined &&
+                        {players.length !== 0 && <StatLabels />}
+                        {players.map((player: Player) => (player.id !== undefined &&
                             <PlayerCard key={player.id}
                                 id={player.id}
                                 commonPlayerInfo={player.commonPlayerInfo}
                                 seasonStatistics={player.seasonStatistics}
                                 last10Statistics={player.last10Statistics} />)
                         )}
-                        {testPlayers.length < 3 && <AddPlayerButton />}
+                        {players.length < 3 && <AddPlayerButton />}
                     </Stack>
                 </Stack>)
                 : <MainLogin />}

@@ -3,7 +3,7 @@ import { LoggedInUser } from '../types'
 
 const baseUrl = '/api/users'
 
-let token = null
+let token: string | null
 
 const setToken = (tokenToSet: string) => {
     token = `bearer ${tokenToSet}`
@@ -14,4 +14,13 @@ const getPlayers = async (user: LoggedInUser) => {
     return response.data
 }
 
-export default { setToken, getPlayers }
+const addPlayer = async (player_name: string) => {
+    const config = {
+        headers: { Authorization: token },
+    }
+
+    const response = await axios.post(`${baseUrl}/addplayer`, { "name": player_name }, config)
+    return response.data
+}
+
+export default { setToken, getPlayers, addPlayer }

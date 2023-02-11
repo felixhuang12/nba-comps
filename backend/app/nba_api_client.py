@@ -1,7 +1,7 @@
 from nba_api.stats.endpoints import playercareerstats
 from nba_api.stats.endpoints import playerdashboardbylastngames
 from nba_api.stats.endpoints import commonplayerinfo
-import math
+from nba_api.stats.static import players
 
 class DataRetriever:
     def __init__(self):
@@ -31,7 +31,7 @@ class DataRetriever:
             stats.append(self.getIndividualPlayerStatAverages(playerID=playerID))
         return stats
 
-    def getIndividualPlayerStatAverages(self, playerID: str):
+    def getIndividualPlayerStatAverages(self, playerID: int):
         player = playercareerstats.PlayerCareerStats(player_id=playerID)
         df = player.get_data_frames()[0]
         current_season = df.loc[len(df)-1]
@@ -54,7 +54,7 @@ class DataRetriever:
             stats.append(self.getIndividualPlayerLast10GamesStatAverages(playerID=playerID))
         return stats
 
-    def getIndividualPlayerLast10GamesStatAverages(self, playerID: str):
+    def getIndividualPlayerLast10GamesStatAverages(self, playerID: int):
         player = playerdashboardbylastngames.PlayerDashboardByLastNGames(player_id=playerID)
         player_last10 = player.last10_player_dashboard.get_data_frame()
         player_stats = player_last10.loc[0]
@@ -70,3 +70,21 @@ class DataRetriever:
             "ts_pct": round(player_stats["PTS"]*100/(2*(player_stats["FGA"]+0.44*player_stats["FTA"])), 1)
         }
         return stats
+
+    def getAllActivePlayers(self):
+        return players.get_active_players()
+
+    def getPlayerIDFromName(self, full_name: str):
+        players = self.getAllActivePlayers()
+        player = {}
+        for p in players:
+            if p["full_name"] == full_name:
+                player = p
+                break
+        return player["id"]
+    
+    def getAggregatePlayerInfo(self, playerID: int):
+        common_info = self.getCommonPlayerInfo(playerID=playerID)
+        stat_avgs = self.getIndividualPlayerStatAverages(playerID=playerID)
+        last_10_stats_avgs = self.getIndividualPlayerLast10GamesStatAverages(playerID=playerID)
+        return common_info, stat_avgs, last_10_stats_avgs

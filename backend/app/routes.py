@@ -40,6 +40,9 @@ bcrypt = LocalProxy(init_bcrypt)
 def test():
     return('hey')
 
+def get_token_from(request):
+    auth = request.data[""]
+
 @login_routes.route(f'{baseLoginUrl}/create', methods=['POST'])
 def createUser():
     print('hit')
@@ -73,3 +76,10 @@ def getPlayers(username: str):
     user = db.users.find_one({'username': username})
     print(user)
     return Response(response=json.dumps({"username": user['username'], "players": user['players']}))
+
+@user_routes.route(f'{baseUserUrl}/addplayer', methods=['POST'])
+def addPlayer():
+    print(request.headers.get('Authorization'))
+    print("--------------------")
+    print(request.get_json())
+    return Response(response=json.dumps({"test": "test"}))
