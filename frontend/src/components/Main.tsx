@@ -30,8 +30,12 @@ const Main = () => {
 
     useEffect(() => {
         const cache = window.localStorage.getItem('loggedInNBACompsUser')
-        if (cache)
-            dispatch({ type: "SET_LOGGED_IN_USER", payload: JSON.parse(cache) })
+        if (cache) {
+            const user = JSON.parse(cache)
+            userService.setToken(user.token)
+            dispatch({ type: "SET_LOGGED_IN_USER", payload: user })
+        }
+
     }, [dispatch])
 
     useEffect(() => {

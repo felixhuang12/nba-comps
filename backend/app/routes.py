@@ -4,7 +4,9 @@ from werkzeug.local import LocalProxy
 from .models import User
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import decode_token
 from flask_jwt_extended import JWTManager
+from .nba_api_client import DataRetriever as NBA
 
 player_routes = Blueprint('player', __name__)
 login_routes = Blueprint('login', __name__)
@@ -79,7 +81,15 @@ def getPlayers(username: str):
 
 @user_routes.route(f'{baseUserUrl}/addplayer', methods=['POST'])
 def addPlayer():
-    print(request.headers.get('Authorization'))
+    token = request.headers.get('Authorization').split()[1]
+    print("Token: " + token)
     print("--------------------")
-    print(request.get_json())
-    return Response(response=json.dumps({"test": "test"}))
+    decoded_token = decode_token(token)
+    if not decoded_token["sub"]:
+        return Response(response=json.dumps({"error": "User is not authorized."}), status=401, content_type='application/json')
+    data = request.get_json()
+    player_name = data["player_name"]
+    client = NBA()
+    player_id = client.getPlayerIDFromName(player_name)
+    player_data = client.getAggregatePlayerInfo(player_id)
+    return Response(response=json.dumps({"data": player_data}), status=200, content_type='application/json')

@@ -17,11 +17,11 @@ class DataRetriever:
         player = commonplayerinfo.CommonPlayerInfo(player_id=playerID)
         df = player.common_player_info.get_data_frame()
         info = {
-            "id": df.iloc[0][0],
+            "id": int(df.iloc[0][0]),
             "name": df.iloc[0][3],
             "position": df.iloc[0][15],
             "teamAbbv": df.iloc[0][20],
-            "jerseyNum": df.iloc[0][14]
+            "jerseyNum": int(df.iloc[0][14])
         }
         return info
 
@@ -37,14 +37,14 @@ class DataRetriever:
         current_season = df.loc[len(df)-1]
         gp = current_season["GP"]
         stats = {
-            "ppg": round(current_season["PTS"]/gp, 1),
-            "apg": round(current_season["AST"]/gp, 1),
-            "rpg": round(current_season["REB"]/gp, 1),
+            "ppg": round(current_season["PTS"]/gp, 1).item(),
+            "apg": round(current_season["AST"]/gp, 1).item(),
+            "rpg": round(current_season["REB"]/gp, 1).item(),
             "ft_pct": round(current_season["FT_PCT"]*100, 1),
-            "fg2_pct": round((current_season["FGM"]-current_season["FG3M"])*100/(current_season["FGA"]-current_season["FG3A"]), 1),
-            "fg3_pct": round(current_season["FG3_PCT"]*100, 1),
-            "fg_pct": round(current_season["FG_PCT"]*100, 1),
-            "ts_pct": round(current_season["PTS"]*100/(2*(current_season["FGA"]+0.44*current_season["FTA"])), 1)
+            "fg2_pct": round((current_season["FGM"]-current_season["FG3M"])*100/(current_season["FGA"]-current_season["FG3A"]), 1).item(),
+            "fg3_pct": round(current_season["FG3_PCT"]*100, 1).item(),
+            "fg_pct": round(current_season["FG_PCT"]*100, 1).item(),
+            "ts_pct": round(current_season["PTS"]*100/(2*(current_season["FGA"]+0.44*current_season["FTA"])), 1).item()
         }
         return stats
 
@@ -60,14 +60,14 @@ class DataRetriever:
         player_stats = player_last10.loc[0]
         gp = player_stats["GP"]
         stats = {
-            "ppg": round(player_stats["PTS"]/gp, 1),
-            "apg": round(player_stats["AST"]/gp, 1),
-            "rpg": round(player_stats["REB"]/gp, 1),
-            "ft_pct": round(player_stats["FT_PCT"]*100, 1),
-            "fg2_pct": round((player_stats["FGM"]-player_stats["FG3M"])*100/(player_stats["FGA"]-player_stats["FG3A"]), 1),
-            "fg3_pct": round(player_stats["FG3_PCT"]*100, 1),
-            "fg_pct": round(player_stats["FG_PCT"]*100, 1),
-            "ts_pct": round(player_stats["PTS"]*100/(2*(player_stats["FGA"]+0.44*player_stats["FTA"])), 1)
+            "ppg": round(player_stats["PTS"]/gp, 1).item(),
+            "apg": round(player_stats["AST"]/gp, 1).item(),
+            "rpg": round(player_stats["REB"]/gp, 1).item(),
+            "ft_pct": round(player_stats["FT_PCT"]*100, 1).item(),
+            "fg2_pct": round((player_stats["FGM"]-player_stats["FG3M"])*100/(player_stats["FGA"]-player_stats["FG3A"]), 1).item(),
+            "fg3_pct": round(player_stats["FG3_PCT"]*100, 1).item(),
+            "fg_pct": round(player_stats["FG_PCT"]*100, 1).item(),
+            "ts_pct": round(player_stats["PTS"]*100/(2*(player_stats["FGA"]+0.44*player_stats["FTA"])), 1).item()
         }
         return stats
 
@@ -87,4 +87,4 @@ class DataRetriever:
         common_info = self.getCommonPlayerInfo(playerID=playerID)
         stat_avgs = self.getIndividualPlayerStatAverages(playerID=playerID)
         last_10_stats_avgs = self.getIndividualPlayerLast10GamesStatAverages(playerID=playerID)
-        return common_info, stat_avgs, last_10_stats_avgs
+        return [common_info, stat_avgs, last_10_stats_avgs]
