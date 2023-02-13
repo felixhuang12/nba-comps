@@ -1,5 +1,6 @@
 from flask import Blueprint, request, json, current_app, g, Response
 from flask_pymongo import PyMongo
+from pymongo import ReturnDocument
 from werkzeug.local import LocalProxy
 from .models import User
 from flask_bcrypt import Bcrypt
@@ -87,9 +88,11 @@ def addPlayer():
     decoded_token = decode_token(token)
     if not decoded_token["sub"]:
         return Response(response=json.dumps({"error": "User is not authorized."}), status=401, content_type='application/json')
+    username = decoded_token["sub"]
     data = request.get_json()
     player_name = data["player_name"]
     client = NBA()
     player_id = client.getPlayerIDFromName(player_name)
     player_data = client.getAggregatePlayerInfo(player_id)
-    return Response(response=json.dumps({"data": player_data}), status=200, content_type='application/json')
+    updated_data = db.users.find_one_and_update({'username': username}, {"$push": {"players": player_data}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
+    return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')
