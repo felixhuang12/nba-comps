@@ -26,7 +26,7 @@ const Header = ({ bg }: { bg: string }) => {
 
 const Main = () => {
     const [state, dispatch] = useStateValue()
-    const [players, setPlayers] = useState([] as Player[])
+    // const [players, setPlayers] = useState([] as Player[])
 
     useEffect(() => {
         const cache = window.localStorage.getItem('loggedInNBACompsUser')
@@ -41,11 +41,12 @@ const Main = () => {
     useEffect(() => {
         if (state.user !== null && Object.keys(state.user).length !== 0 && state.user.username !== '')
             userService.getPlayers(state.user).then((user_players) => {
-                setPlayers(user_players.players)
+                dispatch({ type: "SET_PLAYERS", payload: user_players })
             })
     }, [state.user, dispatch])
 
     console.log(state.user)
+    console.log(state.players)
 
     return (
         <Box>
@@ -55,15 +56,15 @@ const Main = () => {
                 ? (<Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"}>
                     <Logout />
                     <Stack direction={"row"} spacing={16} justifyContent={"center"} alignItems={"flex-start"} sx={{ p: 4 }}>
-                        {players.length !== 0 && <StatLabels />}
-                        {players.map((player: Player) => (player.id !== undefined &&
+                        {state.players.length !== 0 && <StatLabels />}
+                        {state.players.map((player: Player) => (player.id !== undefined &&
                             <PlayerCard key={player.id}
                                 id={player.id}
                                 commonPlayerInfo={player.commonPlayerInfo}
                                 seasonStatistics={player.seasonStatistics}
                                 last10Statistics={player.last10Statistics} />)
                         )}
-                        {players.length < 3 && <AddPlayerButton />}
+                        {state.players.length < 3 && <AddPlayerButton />}
                     </Stack>
                 </Stack>)
                 : <MainLogin />}

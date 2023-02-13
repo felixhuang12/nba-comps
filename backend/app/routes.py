@@ -39,16 +39,8 @@ bcrypt = LocalProxy(init_bcrypt)
 
 # jwt = LocalProxy(init_jwt)
 
-@login_routes.route('/test', methods=['GET'])
-def test():
-    return('hey')
-
-def get_token_from(request):
-    auth = request.data[""]
-
 @login_routes.route(f'{baseLoginUrl}/create', methods=['POST'])
 def createUser():
-    print('hit')
     data = json.loads(request.data.decode('UTF-8'))
     existingUser = db.users.find_one({'username': data['username']})
     if existingUser:
@@ -63,6 +55,7 @@ def createUser():
 def login():
     credentials = json.loads(request.data.decode('UTF-8'))
     existingUser = db.users.find_one({'username': credentials['username']})
+    print("USER LOGGED IN -----------------------")
     print(existingUser)
     if not existingUser:
         error = json.dumps({'error': f"User {credentials['username']} does not exist."})
@@ -77,7 +70,9 @@ def login():
 @user_routes.route(f'{baseUserUrl}/<username>')
 def getPlayers(username: str):
     user = db.users.find_one({'username': username})
+    print("USER PLAYERS -----------------")
     print(user)
+    print("------------------------------")
     return Response(response=json.dumps({"username": user['username'], "players": user['players']}))
 
 @user_routes.route(f'{baseUserUrl}/addplayer', methods=['POST'])
@@ -94,9 +89,10 @@ def addPlayer():
     client = NBA()
     player_id = client.getPlayerIDFromName(player_name)
     player_data = client.getAggregatePlayerInfo(player_id)
+    formatted = {"id": player_data[0]["id"], "commonPlayerInfo": player_data[0], "seasonStatistics": player_data[1], "last10Statistics": player_data[2]}
     existing_user = db.users.find_one({"username": username})
     for player in existing_user["players"]:
-        if player[0]["id"] == player_data[0]["id"]:
+        if player["id"] == formatted["id"]:
             return Response(response=json.dumps({"error": "Player is already added."}), status=400, content_type='application/json')
-    updated_data = db.users.find_one_and_update({'username': username}, {"$push": {"players": player_data}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
+    updated_data = db.users.find_one_and_update({'username': username}, {"$push": {"players": formatted}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
     return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')

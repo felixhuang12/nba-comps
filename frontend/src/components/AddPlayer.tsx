@@ -25,7 +25,7 @@ const AddPlayerButton = () => {
                     endIcon={!searchInputVisible && <AddIcon />}>
                     Add Player
                 </Button>
-                : <Box textAlign={"center"} sx={{textDecoration: "underline"}}>Search Player</Box>}
+                : <Box textAlign={"center"} sx={{ textDecoration: "underline" }}>Search Player</Box>}
             <Search visible={searchInputVisible} setVisible={setSearchInputVisible} />
         </Stack>
 
@@ -40,7 +40,10 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
         event.preventDefault()
         try {
             const data = await userService.addPlayer(query)
-            console.log(data)
+            const updatedPlayers = data.data.players
+            setVisible(false)
+            dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Successfully added player.", alertType: "success" } })
+            dispatch({ type: "SET_PLAYERS", payload: { players: updatedPlayers } })
         } catch (error: unknown) {
             let message = null
             if (error instanceof AxiosError) {
