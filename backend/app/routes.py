@@ -94,5 +94,9 @@ def addPlayer():
     client = NBA()
     player_id = client.getPlayerIDFromName(player_name)
     player_data = client.getAggregatePlayerInfo(player_id)
+    existing_user = db.users.find_one({"username": username})
+    for player in existing_user["players"]:
+        if player[0]["id"] == player_data[0]["id"]:
+            return Response(response=json.dumps({"error": "Player is already added."}), status=400, content_type='application/json')
     updated_data = db.users.find_one_and_update({'username': username}, {"$push": {"players": player_data}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
     return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')
