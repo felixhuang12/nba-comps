@@ -47,6 +47,7 @@ const Login = ({ visible, setLoginVisible, setRegisterVisible }: AccountPageProp
             userService.setToken(user.token)
         } catch (error: unknown) {
             let message = null
+            console.log(error)
             if (error instanceof AxiosError) {
                 message = error?.response?.data.error
             }
@@ -143,6 +144,7 @@ const Registration = ({ visible, setLoginVisible, setRegisterVisible }: AccountP
                 dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Account successfully created!", alertType: 'success' } })
             } catch (error: unknown) {
                 let message = null
+                console.log(error)
                 if (error instanceof AxiosError) {
                     message = error?.response?.data.error
                 }

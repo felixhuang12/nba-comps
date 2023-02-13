@@ -24,6 +24,11 @@ export interface Player {
     last10Statistics: Stats
 }
 
+export interface ActivePlayerRef {
+    id: number,
+    full_name: string
+}
+
 export interface NewUser {
     name: string,
     username: string,

@@ -71,7 +71,7 @@ def login():
 def getPlayers(username: str):
     user = db.users.find_one({'username': username})
     print("USER PLAYERS -----------------")
-    print(user)
+    print(user["players"])
     print("------------------------------")
     return Response(response=json.dumps({"username": user['username'], "players": user['players']}))
 
@@ -81,6 +81,9 @@ def addPlayer():
     print("Token: " + token)
     print("--------------------")
     decoded_token = decode_token(token)
+    print("Decoded token: ")
+    print(decoded_token)
+    print("--------------------")
     if not decoded_token["sub"]:
         return Response(response=json.dumps({"error": "User is not authorized."}), status=401, content_type='application/json')
     username = decoded_token["sub"]
@@ -88,6 +91,8 @@ def addPlayer():
     player_name = data["player_name"]
     client = NBA()
     player_id = client.getPlayerIDFromName(player_name)
+    if player_id is None:
+        return Response(response=json.dumps({"error": "Player does not exist."}), status=404, content_type='application/json')
     player_data = client.getAggregatePlayerInfo(player_id)
     formatted = {"id": player_data[0]["id"], "commonPlayerInfo": player_data[0], "seasonStatistics": player_data[1], "last10Statistics": player_data[2]}
     existing_user = db.users.find_one({"username": username})
@@ -96,3 +101,10 @@ def addPlayer():
             return Response(response=json.dumps({"error": "Player is already added."}), status=400, content_type='application/json')
     updated_data = db.users.find_one_and_update({'username': username}, {"$push": {"players": formatted}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
     return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')
+
+
+@player_routes.route('/api/nba_api/active_players')
+def getAllActivePlayers():
+    client = NBA()
+    active_players = client.getAllActivePlayers()
+    return Response(response=json.dumps({"active_players": active_players}), status=200, content_type='application/json')

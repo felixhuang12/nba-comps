@@ -42,7 +42,7 @@ from nba_api_client import DataRetriever as NBA
 
 # testing NBADataRetriever
 nba = NBA()
-print(nba.getCommonPlayerInfo(playerID="1628378"))
+# print(nba.getCommonPlayerInfo(playerID="1628378"))
 # print(nba.getCommonPlayerInfos(playerIDs=[203999, 1628369]))
 # print(nba.getIndividualPlayerStatAverages(playerID='1628369'))
 # print(nba.getIndividualPlayerStatAverages(playerID='203999'))
@@ -52,5 +52,7 @@ print(nba.getCommonPlayerInfo(playerID="1628378"))
 # print(nba.getIndividualPlayerLast10GamesStatAverages(playerID='1628378'))
 # print(nba.getIndividualPlayerLast10GamesStatAverages(playerID='203999'))
 # print(nba.getAllPlayersLast10GamesStatAverages(playerIDs=['203999', '1628369']))
-print(nba.getAggregatePlayerInfo(playerID=1628378))
-print(type(nba.getAggregatePlayerInfo(playerID=1628378)))
+# print(nba.getAggregatePlayerInfo(playerID=1628378))
+# print(type(nba.getAggregatePlayerInfo(playerID=1628378)))
+print(players.get_active_players())
+print(type(players.get_active_players()))

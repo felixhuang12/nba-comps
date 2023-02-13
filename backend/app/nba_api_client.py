@@ -81,6 +81,8 @@ class DataRetriever:
             if p["full_name"] == full_name:
                 player = p
                 break
+        if not player:
+            return None
         return player["id"]
     
     def getAggregatePlayerInfo(self, playerID: int):

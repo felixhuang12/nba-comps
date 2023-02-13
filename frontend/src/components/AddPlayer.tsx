@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import { Button, TextField, Stack, Autocomplete, Box } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { useStateValue } from '../state/state'
 import { AxiosError } from 'axios'
 import userService from '../services/user'
+import { ActivePlayerRef } from '../types'
+import nba_api_client from '../services/player'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const AddPlayerButton = () => {
     const [, dispatch] = useStateValue()
@@ -33,8 +36,31 @@ const AddPlayerButton = () => {
 }
 
 const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boolean) => void }) => {
-    const [state, dispatch] = useStateValue()
+    const [, dispatch] = useStateValue()
     const [query, setQuery] = useState('')
+    const [open, setOpen] = useState(false)
+    const [options, setOptions] = useState<readonly ActivePlayerRef[]>([])
+    const loading = open && options.length === 0
+
+    useEffect(() => {
+        if (open) {
+            nba_api_client.getAllActiveNBAPlayers().then((data) => {
+                try {
+                    setOptions(data.active_players)
+                } catch (error: unknown) {
+                    let message = null
+                    console.log(error)
+                    if (error instanceof AxiosError) {
+                        message = error?.response?.data.error
+                    }
+                    if (message == null || message === '') {
+                        message = "Something went wrong."
+                    }
+                    dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: message, alertType: 'error' } })
+                }
+            })
+        }
+    }, [open])
 
     const handleClick = async (event: any) => {
         event.preventDefault()
@@ -46,6 +72,7 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
             dispatch({ type: "SET_PLAYERS", payload: { players: updatedPlayers } })
         } catch (error: unknown) {
             let message = null
+            console.log(error)
             if (error instanceof AxiosError) {
                 message = error?.response?.data.error
             }
@@ -62,9 +89,27 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
                 <Autocomplete
                     id="player-query"
                     freeSolo
-                    options={state.players.map((player) => player.id)}
-                    renderInput={(params) => <TextField {...params} label="Player name" />}
+                    open={open}
+                    onOpen={() => {
+                        setOpen(true);
+                    }}
+                    onClose={() => {
+                        setOpen(false);
+                    }}
+                    options={[...options].map((player) => player.full_name)}
+                    renderInput={(params) =>
+                        <TextField {...params} label="Player name" InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                                <Fragment>
+                                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                    {params.InputProps.endAdornment}
+                                </Fragment>
+                            ),
+                        }} />
+                    }
                     onInputChange={(event, value, reason) => setQuery(value)}
+                    loading={loading}
                 />
                 <Stack direction={"row"} spacing={2} justifyContent={"center"}>
                     <Button
