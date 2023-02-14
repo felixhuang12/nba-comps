@@ -1,4 +1,4 @@
-from flask import Blueprint, request, json, current_app, g, Response
+from flask import Flask, Blueprint, request, json, current_app, g, Response, jsonify
 from flask_pymongo import PyMongo
 from pymongo import ReturnDocument
 from werkzeug.local import LocalProxy
@@ -8,6 +8,9 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import decode_token
 from flask_jwt_extended import JWTManager
 from .nba_api_client import DataRetriever as NBA
+from datetime import timedelta
+
+app = Flask(__name__)
 
 player_routes = Blueprint('player', __name__)
 login_routes = Blueprint('login', __name__)
@@ -23,21 +26,25 @@ def get_db():
     db = getattr(g, "_database", None)
 
     if db is None:
-        db = g._database = PyMongo(current_app).db
+        db = g._database = PyMongo(app).db
        
     return db
 
 db = LocalProxy(get_db)
 
 def init_bcrypt():
-    return Bcrypt(current_app)
+    return Bcrypt(app)
 
 bcrypt = LocalProxy(init_bcrypt)
 
-# def init_jwt():
-#     return JWTManager(current_app)
+def init_jwt():
+    return JWTManager(app)
 
-# jwt = LocalProxy(init_jwt)
+jwt = LocalProxy(init_jwt)
+
+@jwt.expired_token_loader
+def my_expired_token_callback(jwt_header, jwt_payload):
+    return jsonify({"error": "Your access token has expired. Please log in again."}), 401
 
 @login_routes.route(f'{baseLoginUrl}/create', methods=['POST'])
 def createUser():
@@ -64,7 +71,8 @@ def login():
     if not validated:
         error = json.dumps({'error': "Incorrect password."})
         return Response(response=error, status=401, content_type='application/json')
-    access_token = create_access_token(identity=existingUser['username'])
+    dt = timedelta(minutes=15)
+    access_token = create_access_token(identity=existingUser['username'], expires_delta=dt)
     return Response(response=json.dumps({ "token": access_token, "username": existingUser['username'], "name": existingUser['name']}), status=200, content_type='application/json')
 
 @user_routes.route(f'{baseUserUrl}/<username>')
@@ -81,11 +89,6 @@ def addPlayer():
     print("Token: " + token)
     print("--------------------")
     decoded_token = decode_token(token)
-    print("Decoded token: ")
-    print(decoded_token)
-    print("--------------------")
-    if not decoded_token["sub"]:
-        return Response(response=json.dumps({"error": "User is not authorized."}), status=401, content_type='application/json')
     username = decoded_token["sub"]
     data = request.get_json()
     player_name = data["player_name"]

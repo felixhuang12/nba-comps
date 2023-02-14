@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Stack } from '@mui/material'
+import { Box, Stack, Container } from '@mui/material'
 import { useState, useEffect } from 'react'
 import PlayerCard from './Player'
 import { MainLogin, Logout } from './Login'
@@ -53,9 +53,9 @@ const Main = () => {
             <Header bg={"#DCDCDC"} />
             <Notification />
             {state.user !== null && state.user !== undefined && Object.keys(state.user).length !== 0 && state.user.username !== ''
-                ? (<Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"}>
+                ? <Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"} maxWidth={"100%"}>
                     <Logout />
-                    <Stack direction={"row"} spacing={16} justifyContent={"center"} alignItems={"flex-start"} sx={{ p: 4 }}>
+                    <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
                         {state.players.length !== 0 && <StatLabels />}
                         {state.players.map((player: Player) => (player.id !== undefined &&
                             <PlayerCard key={player.id}
@@ -66,7 +66,7 @@ const Main = () => {
                         )}
                         {state.players.length < 3 && <AddPlayerButton />}
                     </Stack>
-                </Stack>)
+                </Stack>
                 : <MainLogin />}
         </Box>
     )

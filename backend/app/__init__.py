@@ -1,10 +1,8 @@
 from flask import Flask
 # from flask_cors import CORS
-from .routes import player_routes, login_routes, user_routes, init_bcrypt
+from .routes import app, player_routes, login_routes, user_routes, init_bcrypt, init_jwt
 from config import Config
 from flask_jwt_extended import JWTManager
-
-app = Flask(__name__)
 
 def create_app():
     # CORS(app, resources={r"/*": {"origins": "*"}})
@@ -15,6 +13,5 @@ def create_app():
     app.register_blueprint(user_routes)
     with app.app_context():
         init_bcrypt()
-        # init_jwt()
-    JWTManager(app)
+        init_jwt()
     return app

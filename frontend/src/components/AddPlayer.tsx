@@ -75,6 +75,9 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
             console.log(error)
             if (error instanceof AxiosError) {
                 message = error?.response?.data.error
+                if (message == null || message === '') {
+                    message = error?.response?.data.msg
+                }
             }
             if (message == null || message === '') {
                 message = "Something went wrong."
