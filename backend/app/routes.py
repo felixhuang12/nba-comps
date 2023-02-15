@@ -105,6 +105,28 @@ def addPlayer():
     updated_data = db.users.find_one_and_update({'username': username}, {"$push": {"players": formatted}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
     return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')
 
+@user_routes.route(f'{baseUserUrl}/deleteplayer/<id>', methods=['DELETE'])
+def deletePlayer(id):
+    token = request.headers.get('Authorization').split()[1]
+    decoded_token = decode_token(token)
+    username = decoded_token["sub"]
+    existing_user = db.users.find_one({"username": username})
+    players = existing_user["players"]
+    print(type(id))
+    print('a')
+    for player in players:
+        print(type(player["id"]))
+    updated_players = [player for player in players if player["id"] != int(id)]
+    print("here")
+    print(updated_players)
+    updated_data = db.users.find_one_and_update({'username': username}, {"$set": {"players": updated_players}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
+    print("here2")
+    print(updated_data)
+    if updated_data:
+        return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')
+    else:
+        return Response(response=json.dumps({"error": "Update not successful."}), status=500, content_type='application/json')
+
 
 @player_routes.route('/api/nba_api/active_players')
 def getAllActivePlayers():

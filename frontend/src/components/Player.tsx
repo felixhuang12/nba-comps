@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Stack, Divider } from '@mui/material'
 import { Player, Stats, CommonPlayerInfo } from '../types'
+import DeletePlayerButton from './DeletePlayer'
 
 const PlayerInfo = ({ commonPlayerInfo }: { commonPlayerInfo: CommonPlayerInfo }) => {
     const playerImageURL = `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${commonPlayerInfo.id}.png`
@@ -64,16 +65,17 @@ const ShootingPerformance = ({ seasonStatistics }: { seasonStatistics: Stats }) 
     )
 }
 
-const PlayerCard = ({ commonPlayerInfo, seasonStatistics, last10Statistics }: Player) => {
+const PlayerCard = ({player}: {player: Player}) => {
     return (
         <Box minWidth={0}>
-            <PlayerInfo commonPlayerInfo={commonPlayerInfo} />
+            <DeletePlayerButton player={player} />
+            <PlayerInfo commonPlayerInfo={player.commonPlayerInfo} />
             <Divider sx={{ borderWidth: 1, marginTop: 2 }} />
-            <SeasonStats stats={seasonStatistics} />
+            <SeasonStats stats={player.seasonStatistics} />
             <Divider sx={{ borderWidth: 1, marginTop: 2 }} />
-            <LastTenGameStats last10Stats={last10Statistics} />
+            <LastTenGameStats last10Stats={player.last10Statistics} />
             <Divider sx={{ borderWidth: 1, marginTop: 2 }} />
-            <ShootingPerformance seasonStatistics={seasonStatistics} />
+            <ShootingPerformance seasonStatistics={player.seasonStatistics} />
         </Box>
     )
 }

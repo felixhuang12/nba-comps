@@ -25,4 +25,12 @@ const addPlayer = async (player_name: string) => {
     return response.data
 }
 
-export default { setToken, getPlayers, addPlayer }
+const deletePlayer = async (player_id: number) => {
+    const config = {
+        headers: { Authorization: token },
+    }
+    const response = await axios.delete(`${baseUrl}/deleteplayer/${player_id}`, config)
+    return response.data
+}
+
+export default { setToken, getPlayers, addPlayer, deletePlayer }

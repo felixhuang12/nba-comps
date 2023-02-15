@@ -7,3 +7,4 @@ class Config(object):
     DEBUG=True
     MONGO_URI=os.getenv("MONGODB_URI")
     JWT_SECRET_KEY=os.getenv("JWT_SECRET_KEY")
+    FLASK_APP=os.getenv("FLASK_APP")

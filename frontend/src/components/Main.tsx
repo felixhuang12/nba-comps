@@ -58,11 +58,7 @@ const Main = () => {
                     <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
                         {state.players.length !== 0 && <StatLabels />}
                         {state.players.map((player: Player) => (player.id !== undefined &&
-                            <PlayerCard key={player.id}
-                                id={player.id}
-                                commonPlayerInfo={player.commonPlayerInfo}
-                                seasonStatistics={player.seasonStatistics}
-                                last10Statistics={player.last10Statistics} />)
+                            <PlayerCard key={player.id} player={player} />)
                         )}
                         {state.players.length < 3 && <AddPlayerButton />}
                     </Stack>
