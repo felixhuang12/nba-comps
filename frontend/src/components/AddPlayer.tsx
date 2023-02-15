@@ -7,6 +7,7 @@ import userService from '../services/user'
 import { ActivePlayerRef } from '../types'
 import nba_api_client from '../services/player'
 import CircularProgress from '@mui/material/CircularProgress'
+import { LoadingButton } from '@mui/lab'
 
 const AddPlayerButton = () => {
     const [, dispatch] = useStateValue()
@@ -40,6 +41,7 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
     const [query, setQuery] = useState('')
     const [open, setOpen] = useState(false)
     const [options, setOptions] = useState<readonly ActivePlayerRef[]>([])
+    const [addButtonLoading, setAddButtonLoading] = useState(false)
     const loading = open && options.length === 0
 
     useEffect(() => {
@@ -65,11 +67,13 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
     const handleClick = async (event: any) => {
         event.preventDefault()
         try {
+            setAddButtonLoading(true)
             const data = await userService.addPlayer(query)
             const updatedPlayers = data.data.players
             setVisible(false)
             dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Successfully added player.", alertType: "success" } })
             dispatch({ type: "SET_PLAYERS", payload: { players: updatedPlayers } })
+            setAddButtonLoading(false)
         } catch (error: unknown) {
             let message = null
             console.log(error)
@@ -115,19 +119,21 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
                     loading={loading}
                 />
                 <Stack direction={"row"} spacing={2} justifyContent={"center"}>
-                    <Button
-                        variant={'contained'}
-                        sx={{
-                            textTransform: 'none',
-                            backgroundColor: "#DCDCDC",
-                            color: "black",
-                            ":hover": { backgroundColor: "lightgray" },
-                            maxHeight: '75px'
-                        }}
-                        onClick={handleClick}
-                        endIcon={<AddIcon />}>
-                        Add
-                    </Button>
+                    {addButtonLoading
+                        ? <LoadingButton loading variant="outlined" />
+                        : <Button
+                            variant={'contained'}
+                            sx={{
+                                textTransform: 'none',
+                                backgroundColor: "#DCDCDC",
+                                color: "black",
+                                ":hover": { backgroundColor: "lightgray" },
+                                maxHeight: '75px'
+                            }}
+                            onClick={handleClick}
+                            endIcon={<AddIcon />}>
+                            Add
+                        </Button>}
                     <Button
                         variant={'outlined'}
                         sx={{
