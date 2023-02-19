@@ -3,7 +3,7 @@ import { Stack, Box } from '@mui/material'
 
 const StatLabels = () => {
     return (
-        <Stack spacing={2} sx={{ marginTop: "18%" }}>
+        <Stack spacing={2} sx={{ marginTop: "280px" }}>
             <Box sx={{ backgroundColor: "lightgray", p: 1, width: "100%" }}>2022-2023 Regular Season Stats</Box>
             <Stack spacing={2}>
                 <Box>PPG</Box>
