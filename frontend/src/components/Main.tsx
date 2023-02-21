@@ -9,6 +9,7 @@ import { Player } from '../types'
 import userService from '../services/user'
 import Notification from './Notification'
 import { useStateValue } from '../state/state'
+import calcHighestStats from '../services/highs'
 
 // base url for player images: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png
 // example: https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/203999.png -- Nikola Jokic
@@ -26,7 +27,7 @@ const Header = ({ bg }: { bg: string }) => {
 
 const Main = () => {
     const [state, dispatch] = useStateValue()
-    // const [players, setPlayers] = useState([] as Player[])
+    const [highs, setHighs] = useState()
 
     useEffect(() => {
         const cache = window.localStorage.getItem('loggedInNBACompsUser')
@@ -35,7 +36,6 @@ const Main = () => {
             userService.setToken(user.token)
             dispatch({ type: "SET_LOGGED_IN_USER", payload: user })
         }
-
     }, [dispatch])
 
     useEffect(() => {
@@ -45,8 +45,14 @@ const Main = () => {
             })
     }, [state.user, dispatch])
 
+    useEffect(() => {
+        const calc = calcHighestStats(state.players)
+        setHighs(calc)
+    }, [state.players])
+
     console.log(state.user)
     console.log(state.players)
+    console.log(highs)
 
     return (
         <Box>
@@ -57,8 +63,8 @@ const Main = () => {
                     <Logout />
                     <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
                         {state.players.length !== 0 && <StatLabels />}
-                        {state.players.map((player: Player) => (player.id !== undefined &&
-                            <PlayerCard key={player.id} player={player} />)
+                        {state.players.map((player: Player) => (player.id !== undefined && highs !== undefined &&
+                            <PlayerCard key={player.id} player={player} highs={highs} />)
                         )}
                         {state.players.length < 3 && <AddPlayerButton />}
                     </Stack>
@@ -67,98 +73,5 @@ const Main = () => {
         </Box>
     )
 }
-
-const testPlayers: Player[] = [
-    {
-        id: 1628369,
-        commonPlayerInfo: {
-            id: 1628369,
-            name: "Jayson Tatum",
-            position: "Forward / Guard",
-            teamAbbv: "BOS",
-            jerseyNum: 0
-        },
-        seasonStatistics: {
-            ppg: 30.9,
-            apg: 4.4,
-            rpg: 8.7,
-            fg_pct: 46.4,
-            fg2_pct: 54.8,
-            fg3_pct: 35.5,
-            ft_pct: 87.1,
-            ts_pct: 60.9
-        },
-        last10Statistics: {
-            ppg: 31.1,
-            apg: 5.3,
-            rpg: 10.8,
-            fg_pct: 43.4,
-            fg2_pct: 49.2,
-            fg3_pct: 36.9,
-            ft_pct: 92.0,
-            ts_pct: 59.9
-        }
-    },
-    {
-        id: 203999,
-        commonPlayerInfo: {
-            id: 203999,
-            name: "Nikola Jokic",
-            position: "Center",
-            teamAbbv: "DEN",
-            jerseyNum: 15
-        },
-        seasonStatistics: {
-            ppg: 24.8,
-            apg: 10.1,
-            rpg: 11.3,
-            fg_pct: 63.2,
-            fg2_pct: 67.6,
-            fg3_pct: 38.5,
-            ft_pct: 63.2,
-            ts_pct: 70.4
-        },
-        last10Statistics: {
-            ppg: 23.0,
-            apg: 12.2,
-            rpg: 13.1,
-            fg_pct: 71.7,
-            fg2_pct: 75.5,
-            fg3_pct: 47.1,
-            ft_pct: 71.7,
-            ts_pct: 78.1
-        }
-    },
-    // {
-    //     id: 1628378,
-    //     commonPlayerInfo: {
-    //         id: 1628378,
-    //         name: "Donovan Mitchell",
-    //         position: "Guard",
-    //         teamAbbv: "CLE",
-    //         jerseyNum: 45
-    //     },
-    //     seasonStatistics: {
-    //         ppg: 26.9,
-    //         apg: 4.9,
-    //         rpg: 3.8,
-    //         fg_pct: 47.2,
-    //         fg2_pct: 55.0,
-    //         fg3_pct: 38.7,
-    //         ft_pct: 86.9,
-    //         ts_pct: 61.0
-    //     },
-    //     last10Statistics: {
-    //         ppg: 19.5,
-    //         apg: 4.8,
-    //         rpg: 3.4,
-    //         fg_pct: 41.0,
-    //         fg2_pct: 52.7,
-    //         fg3_pct: 31.5,
-    //         ft_pct: 85.7,
-    //         ts_pct: 53.7
-    //     }
-    // }
-]
 
 export default Main

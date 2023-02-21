@@ -112,16 +112,8 @@ def deletePlayer(id):
     username = decoded_token["sub"]
     existing_user = db.users.find_one({"username": username})
     players = existing_user["players"]
-    print(type(id))
-    print('a')
-    for player in players:
-        print(type(player["id"]))
     updated_players = [player for player in players if player["id"] != int(id)]
-    print("here")
-    print(updated_players)
     updated_data = db.users.find_one_and_update({'username': username}, {"$set": {"players": updated_players}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
-    print("here2")
-    print(updated_data)
     if updated_data:
         return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')
     else:

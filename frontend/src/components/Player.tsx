@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Stack, Divider } from '@mui/material'
-import { Player, Stats, CommonPlayerInfo } from '../types'
+import { Player, Stats, CommonPlayerInfo, HighStats } from '../types'
 import DeletePlayerButton from './DeletePlayer'
 
 const PlayerInfo = ({ commonPlayerInfo }: { commonPlayerInfo: CommonPlayerInfo }) => {
@@ -26,56 +26,56 @@ const PlayerInfo = ({ commonPlayerInfo }: { commonPlayerInfo: CommonPlayerInfo }
     )
 }
 
-const SeasonStats = ({ stats }: { stats: Stats }) => {
+const SeasonStats = ({ stats, highs }: { stats: Stats, highs: HighStats }) => {
     return (
-        <Box sx={{ p: 2, marginTop: 2 }} display={"flex"} alignContent={"center"} justifyContent={"center"}>
+        <Box className={"stats-box"}>
             <Stack spacing={2}>
-                <Box>{stats.ppg}</Box>
-                <Box>{stats.apg}</Box>
-                <Box>{stats.rpg}</Box>
-                <Box>{stats.fg3_pct}%</Box>
-                <Box>{stats.ft_pct}%</Box>
+                <Box sx={{ backgroundColor: stats.ppg === highs.ppg ? "lightgreen" : "" }}>{stats.ppg}</Box>
+                <Box sx={{ backgroundColor: stats.apg === highs.apg ? "lightgreen" : "" }}>{stats.apg}</Box>
+                <Box sx={{ backgroundColor: stats.rpg === highs.rpg ? "lightgreen" : "" }}>{stats.rpg}</Box>
+                <Box sx={{ backgroundColor: stats.fg3_pct === highs.fg3_pct ? "lightgreen" : "" }}>{stats.fg3_pct}%</Box>
+                <Box sx={{ backgroundColor: stats.ft_pct === highs.ft_pct ? "lightgreen" : "" }}>{stats.ft_pct}%</Box>
             </Stack>
         </Box>
     )
 }
 
-const LastTenGameStats = ({ last10Stats }: { last10Stats: Stats }) => {
+const LastTenGameStats = ({ last10Stats, highs }: { last10Stats: Stats, highs: HighStats }) => {
     return (
-        <Box sx={{ p: 2, marginTop: 2 }} display={"flex"} alignContent={"center"} justifyContent={"center"}>
+        <Box className={"stats-box"}>
             <Stack spacing={2}>
-                <Box>{last10Stats.ppg}</Box>
-                <Box>{last10Stats.apg}</Box>
-                <Box>{last10Stats.rpg}</Box>
+                <Box sx={{ backgroundColor: last10Stats.ppg === highs.lastppg ? "lightgreen" : "" }}>{last10Stats.ppg}</Box>
+                <Box sx={{ backgroundColor: last10Stats.apg === highs.lastapg ? "lightgreen" : "" }}>{last10Stats.apg}</Box>
+                <Box sx={{ backgroundColor: last10Stats.rpg === highs.lastrpg ? "lightgreen" : "" }}>{last10Stats.rpg}</Box>
             </Stack>
         </Box>
     )
 }
 
-const ShootingPerformance = ({ seasonStatistics }: { seasonStatistics: Stats }) => {
+const ShootingPerformance = ({ seasonStatistics, highs }: { seasonStatistics: Stats, highs: HighStats }) => {
     return (
-        <Box sx={{ p: 2, marginTop: 2 }} display={"flex"} alignContent={"center"} justifyContent={"center"}>
+        <Box className={"stats-box"}>
             <Stack spacing={2}>
-                <Box>{seasonStatistics.fg2_pct}%</Box>
-                <Box>{seasonStatistics.fg3_pct}%</Box>
-                <Box>{seasonStatistics.fg_pct}%</Box>
-                <Box>{seasonStatistics.ts_pct}%</Box>
+                <Box sx={{ backgroundColor: seasonStatistics.fg2_pct === highs.fg2_pct ? "lightgreen" : "" }}>{seasonStatistics.fg2_pct}%</Box>
+                <Box sx={{ backgroundColor: seasonStatistics.fg3_pct === highs.fg3_pct ? "lightgreen" : "" }}>{seasonStatistics.fg3_pct}%</Box>
+                <Box sx={{ backgroundColor: seasonStatistics.fg_pct === highs.fg_pct ? "lightgreen" : "" }}>{seasonStatistics.fg_pct}%</Box>
+                <Box sx={{ backgroundColor: seasonStatistics.ts_pct === highs.ts_pct ? "lightgreen" : "" }}>{seasonStatistics.ts_pct}%</Box>
             </Stack>
         </Box>
     )
 }
 
-const PlayerCard = ({player}: {player: Player}) => {
+const PlayerCard = ({ player, highs }: { player: Player, highs: HighStats }) => {
     return (
         <Box minWidth={0}>
             <DeletePlayerButton player={player} />
             <PlayerInfo commonPlayerInfo={player.commonPlayerInfo} />
             <Divider sx={{ borderWidth: 1, marginTop: 2 }} />
-            <SeasonStats stats={player.seasonStatistics} />
+            <SeasonStats stats={player.seasonStatistics} highs={highs} />
             <Divider sx={{ borderWidth: 1, marginTop: 2 }} />
-            <LastTenGameStats last10Stats={player.last10Statistics} />
+            <LastTenGameStats last10Stats={player.last10Statistics} highs={highs} />
             <Divider sx={{ borderWidth: 1, marginTop: 2 }} />
-            <ShootingPerformance seasonStatistics={player.seasonStatistics} />
+            <ShootingPerformance seasonStatistics={player.seasonStatistics} highs={highs} />
         </Box>
     )
 }

@@ -9,6 +9,25 @@ export interface Stats {
     ts_pct: number
 }
 
+export interface HighStats {
+    ppg: number,
+    apg: number,
+    rpg: number,
+    fg_pct: number,
+    fg2_pct: number,
+    fg3_pct: number,
+    ft_pct: number,
+    ts_pct: number,
+    lastppg: number,
+    lastapg: number,
+    lastrpg: number,
+    lastfg_pct: number,
+    lastfg2_pct: number,
+    lastfg3_pct: number,
+    lastft_pct: number,
+    lastts_pct: number
+}
+
 export interface CommonPlayerInfo {
     id: number,
     name: string,

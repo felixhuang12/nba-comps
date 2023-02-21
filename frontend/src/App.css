@@ -44,6 +44,15 @@
   height: auto;
 }
 
+.stats-box {
+  padding: 1em;
+  margin-top: 1em;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  text-align: center;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
