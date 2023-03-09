@@ -7,7 +7,6 @@ let token: string | null
 
 const setToken = (tokenToSet: string) => {
     token = `bearer ${tokenToSet}`
-    console.log(token)
 }
 
 const getPlayers = async (user: LoggedInUser) => {

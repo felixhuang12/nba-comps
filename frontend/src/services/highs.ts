@@ -20,8 +20,6 @@ const calcHighestStats = (players: Player[]) => {
         lastts_pct: 0
     } as any
 
-    console.log(players)
-
     for (let i = 0; i < players.length; i++) {
         const seasonStats = players[i].seasonStatistics as any
         const last10Stats = players[i].last10Statistics as any
