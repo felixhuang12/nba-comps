@@ -10,7 +10,6 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { LoadingButton } from '@mui/lab'
 
 const AddPlayerButton = () => {
-    const [, dispatch] = useStateValue()
     const [searchInputVisible, setSearchInputVisible] = useState(false)
 
     return (
@@ -62,7 +61,7 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
                 }
             })
         }
-    }, [open])
+    }, [open, dispatch])
 
     const handleClick = async (event: any) => {
         event.preventDefault()
@@ -141,7 +140,10 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
                             maxHeight: '75px'
                         }}
                         color="error"
-                        onClick={() => setVisible(false)}>
+                        onClick={() => {
+                            setVisible(false)
+                            setAddButtonLoading(false)
+                        }}>
                         Cancel
                     </Button>
                 </Stack>

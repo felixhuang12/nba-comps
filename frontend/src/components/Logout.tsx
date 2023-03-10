@@ -13,7 +13,7 @@ const Logout = () => {
         window.localStorage.removeItem('loggedInNBACompsUser')
         dispatch({ type: "SET_LOGGED_IN_USER", payload: {} as LoggedInUser })
         dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Logged out successfully.", alertType: 'success' } })
-        dispatch({ type: "SET_PLAYERS", payload: { players: {} as Player[] } })
+        dispatch({ type: "SET_PLAYERS", payload: { players: [] as Player[] } })
         navigate("/")
     }
 
