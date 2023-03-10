@@ -34,6 +34,7 @@ const SelectStats = () => {
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_fg3_pct} onChange={() => handleChange("show_fg3_pct")} />} label="Three-point Field Goal Percentage (3P%)" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_fg_pct} onChange={() => handleChange("show_fg_pct")} />} label="Total Field Goal Percentage (FG%)" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_ft_pct} onChange={() => handleChange("show_ft_pct")} />} label="Free Throw Percentage (FT%)" />
+                    <FormControlLabel control={<Checkbox checked={state.statsToShow.show_ts_pct} onChange={() => handleChange("show_ts_pct")} />} label="True Shooting Percentage (TS%)" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_spg} onChange={() => handleChange("show_spg")} />} label="Steals Per Game (SPG)" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_bpg} onChange={() => handleChange("show_bpg")} />} label="Blocks Per Game (BPG)" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_tpg} onChange={() => handleChange("show_tpg")} />} label="Turnovers Per Game (TPG)" />
