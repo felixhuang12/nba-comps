@@ -71,7 +71,7 @@ def login():
     if not validated:
         error = json.dumps({'error': "Incorrect password."})
         return Response(response=error, status=401, content_type='application/json')
-    dt = timedelta(minutes=15)
+    dt = timedelta(minutes=60)
     access_token = create_access_token(identity=existingUser['username'], expires_delta=dt)
     return Response(response=json.dumps({ "token": access_token, "username": existingUser['username'], "name": existingUser['name']}), status=200, content_type='application/json')
 

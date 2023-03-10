@@ -1,5 +1,5 @@
 import { State } from "./state"
-import { Player, User } from "../types"
+import { Player, User, StatsDisplay } from "../types"
 
 export type Action =
     {
@@ -13,6 +13,10 @@ export type Action =
     {
         type: "SET_PLAYERS",
         payload: { players: Player[] }
+    } |
+    {
+        type: "SET_STATS_TO_DISPLAY",
+        payload: StatsDisplay
     }
 
 export const reducer = (state: State, action: Action): State => {
@@ -34,6 +38,11 @@ export const reducer = (state: State, action: Action): State => {
             return {
                 ...state,
                 players: action.payload.players
+            }
+        case "SET_STATS_TO_DISPLAY":
+            return {
+                ...state,
+                statsToShow: action.payload
             }
         default:
             return state

@@ -37,6 +37,8 @@ class DataRetriever:
         current_season = df.loc[len(df)-1]
         gp = current_season["GP"]
         stats = {
+            "gp": gp.item(),
+            "mpg": round(current_season["MIN"]/gp, 1).item(),
             "ppg": round(current_season["PTS"]/gp, 1).item(),
             "apg": round(current_season["AST"]/gp, 1).item(),
             "rpg": round(current_season["REB"]/gp, 1).item(),
@@ -44,7 +46,10 @@ class DataRetriever:
             "fg2_pct": round((current_season["FGM"]-current_season["FG3M"])*100/(current_season["FGA"]-current_season["FG3A"]), 1).item(),
             "fg3_pct": round(current_season["FG3_PCT"]*100, 1).item(),
             "fg_pct": round(current_season["FG_PCT"]*100, 1).item(),
-            "ts_pct": round(current_season["PTS"]*100/(2*(current_season["FGA"]+0.44*current_season["FTA"])), 1).item()
+            "ts_pct": round(current_season["PTS"]*100/(2*(current_season["FGA"]+0.44*current_season["FTA"])), 1).item(),
+            "spg": round(current_season["STL"]/gp, 1).item(),
+            "bpg": round(current_season["BLK"]/gp, 1).item(),
+            "tpg": round(current_season["TOV"]/gp, 1).item()
         }
         return stats
 
@@ -60,6 +65,8 @@ class DataRetriever:
         player_stats = player_last10.loc[0]
         gp = player_stats["GP"]
         stats = {
+            "gp": 10,
+            "mpg": round(player_stats["MIN"]/gp, 1).item(),
             "ppg": round(player_stats["PTS"]/gp, 1).item(),
             "apg": round(player_stats["AST"]/gp, 1).item(),
             "rpg": round(player_stats["REB"]/gp, 1).item(),
@@ -67,7 +74,10 @@ class DataRetriever:
             "fg2_pct": round((player_stats["FGM"]-player_stats["FG3M"])*100/(player_stats["FGA"]-player_stats["FG3A"]), 1).item(),
             "fg3_pct": round(player_stats["FG3_PCT"]*100, 1).item(),
             "fg_pct": round(player_stats["FG_PCT"]*100, 1).item(),
-            "ts_pct": round(player_stats["PTS"]*100/(2*(player_stats["FGA"]+0.44*player_stats["FTA"])), 1).item()
+            "ts_pct": round(player_stats["PTS"]*100/(2*(player_stats["FGA"]+0.44*player_stats["FTA"])), 1).item(),
+            "spg": round(player_stats["STL"]/gp, 1).item(),
+            "bpg": round(player_stats["BLK"]/gp, 1).item(),
+            "tpg": round(player_stats["TOV"]/gp, 1).item()
         }
         return stats
 

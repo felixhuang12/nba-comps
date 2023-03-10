@@ -9,6 +9,7 @@ import { Player } from '../types'
 import { useStateValue } from '../state/state'
 import userService from '../services/user'
 import calcHighestStats from '../services/highs'
+import SelectStatsButton from './SelectStatsButton'
 
 const Home = () => {
     const [state, dispatch] = useStateValue()
@@ -37,7 +38,10 @@ const Home = () => {
 
     return (
         <Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"} maxWidth={"100%"}>
-            <Logout />
+            <Stack display={"flex"} direction={"row"} justifyContent={"space-between"}>
+                <SelectStatsButton />
+                <Logout />
+            </Stack>
             <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
                 {state.players.length !== 0 && <StatLabels />}
                 {state.players.map((player: Player) => (player.id !== undefined && highs !== undefined &&

@@ -20,7 +20,7 @@ const Logout = () => {
     return (
         <Button
             variant="contained"
-            sx={{ alignContent: "center", textTransform: 'none', maxWidth: "100px", minWidth: 0, alignSelf: "flex-end", marginTop: 2, marginRight: 2 }}
+            sx={{ alignContent: "center", textTransform: 'none', minWidth: 0, alignSelf: "flex-end", marginTop: 2, marginRight: 2 }}
             onClick={handleLogout}
             endIcon={<LogoutIcon />}>
             Logout
