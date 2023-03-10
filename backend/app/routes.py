@@ -2,7 +2,7 @@ from flask import Flask, Blueprint, request, json, current_app, g, Response, jso
 from flask_pymongo import PyMongo
 from pymongo import ReturnDocument
 from werkzeug.local import LocalProxy
-from .models import User
+from .models import User, Player
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import decode_token
@@ -97,12 +97,12 @@ def addPlayer():
     if player_id is None:
         return Response(response=json.dumps({"error": "Player does not exist."}), status=404, content_type='application/json')
     player_data = client.getAggregatePlayerInfo(player_id)
-    formatted = {"id": player_data[0]["id"], "commonPlayerInfo": player_data[0], "seasonStatistics": player_data[1], "last10Statistics": player_data[2]}
+    newPlayer = Player(id=player_data[0]["id"], commonPlayerInfo=player_data[0], seasonStatistics=player_data[1], last10Statistics=player_data[2])
     existing_user = db.users.find_one({"username": username})
     for player in existing_user["players"]:
-        if player["id"] == formatted["id"]:
+        if player["id"] == newPlayer.id:
             return Response(response=json.dumps({"error": "Player is already added."}), status=400, content_type='application/json')
-    updated_data = db.users.find_one_and_update({'username': username}, {"$push": {"players": formatted}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
+    updated_data = db.users.find_one_and_update({'username': username}, {"$push": {"players": newPlayer.dict()}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
     return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')
 
 @user_routes.route(f'{baseUserUrl}/deleteplayer/<id>', methods=['DELETE'])
