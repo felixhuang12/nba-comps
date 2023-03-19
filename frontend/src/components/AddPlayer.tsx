@@ -86,6 +86,7 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
                 message = "Something went wrong."
             }
             dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: message, alertType: 'error' } })
+            setAddButtonLoading(false)
         }
     }
 
