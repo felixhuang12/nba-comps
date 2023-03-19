@@ -1,6 +1,5 @@
 import React from 'react'
 import { useStateValue, initialState } from '../state/state'
-import { LoggedInUser, Player } from '../types'
 import { Button, Menu, MenuItem } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'

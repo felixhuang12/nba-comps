@@ -62,8 +62,9 @@ def createUser():
 def login():
     credentials = json.loads(request.data.decode('UTF-8'))
     existingUser = db.users.find_one({'username': credentials['username']})
-    print("USER LOGGED IN -----------------------")
+    print("USER LOG IN -----------------------")
     print(existingUser)
+    print("------------------------------")
     if not existingUser:
         error = json.dumps({'error': f"User {credentials['username']} does not exist."})
         return Response(response=error, status=401, content_type='application/json')
@@ -94,8 +95,6 @@ def getPlayers(username: str):
 @user_routes.route(f'{baseUserUrl}/addplayer', methods=['POST'])
 def addPlayer():
     token = request.headers.get('Authorization').split()[1]
-    print("Token: " + token)
-    print("--------------------")
     decoded_token = decode_token(token)
     username = decoded_token["sub"]
     data = request.get_json()

@@ -6,7 +6,7 @@ const StatLabels = () => {
     const [state, ] = useStateValue()
 
     return (
-        <Stack spacing={2} sx={{ marginTop: "280px" }}>
+        <Stack spacing={2} sx={{ marginTop: "275px" }}>
             <Box sx={{ backgroundColor: "lightgray", p: 1, width: "100%" }}>2022-2023 Regular Season Stats</Box>
             <Stack spacing={2}>
                 <Box display={state.statsToShow.show_gp ? "flex" : 'none'}>GP</Box>

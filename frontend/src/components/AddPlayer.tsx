@@ -50,7 +50,6 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
                     setOptions(data.active_players)
                 } catch (error: unknown) {
                     let message = null
-                    console.log(error)
                     if (error instanceof AxiosError) {
                         message = error?.response?.data.error
                     }
@@ -75,7 +74,6 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
             setAddButtonLoading(false)
         } catch (error: unknown) {
             let message = null
-            console.log(error)
             if (error instanceof AxiosError) {
                 message = error?.response?.data.error
                 if (message == null || message === '') {

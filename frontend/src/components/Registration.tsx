@@ -26,7 +26,6 @@ const Registration = () => {
                     password: newPassword
                 }
                 const response = await loginService.createUser(newUser)
-                console.log(response)
                 setNewName('')
                 setNewUsername('')
                 setNewPassword('')
@@ -35,7 +34,6 @@ const Registration = () => {
                 navigate("/")
             } catch (error: unknown) {
                 let message = null
-                console.log(error)
                 if (error instanceof AxiosError) {
                     message = error?.response?.data.error
                 }

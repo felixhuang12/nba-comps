@@ -25,7 +25,6 @@ const Login = () => {
             navigate("/home")
         } catch (error: unknown) {
             let message = null
-            console.log(error)
             if (error instanceof AxiosError) {
                 message = error?.response?.data.error
             }

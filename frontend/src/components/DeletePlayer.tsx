@@ -14,12 +14,10 @@ const DeletePlayerButton = ({player}: {player: Player}) => {
         if (window.confirm(`Remove ${player.commonPlayerInfo.name}?`)) {
             try {
                 const response = await userService.deletePlayer(player.id)
-                console.log(response)
                 dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: `Successfully removed ${player.commonPlayerInfo.name}.`, alertType: "success" } })
                 dispatch({ type: "SET_PLAYERS", payload: response.data })
             } catch (error: unknown) {
                 let message = null
-                console.log(error)
                 if (error instanceof AxiosError) {
                     message = error?.response?.data.error
                     if (message == null || message === '') {
