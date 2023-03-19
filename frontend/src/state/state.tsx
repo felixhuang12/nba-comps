@@ -41,7 +41,7 @@ const defaultStats = {
     show_lasttpg: false
 }
 
-const initialState: State = {
+export const initialState: State = {
     user: {} as User,
     players: [],
     statsToShow: defaultStats,

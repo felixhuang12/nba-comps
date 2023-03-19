@@ -1,5 +1,5 @@
 import React from 'react'
-import { useStateValue } from '../state/state'
+import { useStateValue, initialState } from '../state/state'
 import { LoggedInUser, Player } from '../types'
 import { Button, Menu, MenuItem } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
@@ -17,9 +17,8 @@ const AccountMenu = () => {
 
     const handleLogout = () => {
         window.localStorage.removeItem('loggedInNBACompsUser')
-        dispatch({ type: "SET_LOGGED_IN_USER", payload: {} as LoggedInUser })
+        dispatch({ type: "RESET_STATE", payload: initialState })
         dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Logged out successfully.", alertType: 'success' } })
-        dispatch({ type: "SET_PLAYERS", payload: { players: [] as Player[] } })
         handleClose()
         navigate("/")
     }
@@ -31,9 +30,8 @@ const AccountMenu = () => {
                 const response = await userService.deleteUser()
                 console.log(response)
                 window.localStorage.removeItem('loggedInNBACompsUser')
-                dispatch({ type: "SET_LOGGED_IN_USER", payload: {} as LoggedInUser })
+                dispatch({ type: "RESET_STATE", payload: initialState })
                 dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Successfully deleted account.", alertType: "success" } })
-                dispatch({ type: "SET_PLAYERS", payload: { players: [] as Player[] } })
                 navigate("/")
             } catch (error: unknown) {
                 let message = null

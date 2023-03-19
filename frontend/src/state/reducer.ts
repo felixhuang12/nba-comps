@@ -17,6 +17,10 @@ export type Action =
     {
         type: "SET_STATS_TO_DISPLAY",
         payload: StatsDisplay
+    } |
+    {
+        type: "RESET_STATE",
+        payload: State
     }
 
 export const reducer = (state: State, action: Action): State => {
@@ -44,6 +48,8 @@ export const reducer = (state: State, action: Action): State => {
                 ...state,
                 statsToShow: action.payload
             }
+        case "RESET_STATE":
+            return action.payload
         default:
             return state
     }
