@@ -75,7 +75,15 @@ def login():
     access_token = create_access_token(identity=existingUser['username'], expires_delta=dt)
     return Response(response=json.dumps({ "token": access_token, "username": existingUser['username'], "name": existingUser['name']}), status=200, content_type='application/json')
 
-@user_routes.route(f'{baseUserUrl}/<username>')
+@user_routes.route(f'{baseUserUrl}/deleteUser', methods=['DELETE'])
+def deleteUser():
+    token = request.headers.get('Authorization').split()[1]
+    decoded_token = decode_token(token)
+    username = decoded_token["sub"]
+    user = db.users.delete_one({'username': username})
+    return Response(response=json.dumps({"message": "success: deleted account"}))
+
+@user_routes.route(f'{baseUserUrl}/<username>/getPlayers')
 def getPlayers(username: str):
     user = db.users.find_one({'username': username})
     print("USER PLAYERS -----------------")

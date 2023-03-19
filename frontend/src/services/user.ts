@@ -10,7 +10,7 @@ const setToken = (tokenToSet: string) => {
 }
 
 const getPlayers = async (user: LoggedInUser) => {
-    const response = await axios.get(`${baseUrl}/${user.username}`)
+    const response = await axios.get(`${baseUrl}/${user.username}/getPlayers`)
     return response.data
 }
 
@@ -32,4 +32,12 @@ const deletePlayer = async (player_id: number) => {
     return response.data
 }
 
-export default { setToken, getPlayers, addPlayer, deletePlayer }
+const deleteUser = async () => {
+    const config = {
+        headers: { Authorization: token },
+    }
+    const deletedUser = await axios.delete(`${baseUrl}/deleteUser`, config)
+    return deletedUser.data
+}
+
+export default { setToken, getPlayers, addPlayer, deletePlayer, deleteUser }

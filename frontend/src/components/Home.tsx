@@ -2,7 +2,7 @@ import React from 'react'
 import { Stack } from '@mui/material'
 import { useState, useEffect } from 'react'
 import PlayerCard from './Player'
-import Logout from './Logout'
+import AccountMenu from './MenuSettings'
 import AddPlayerButton from './AddPlayer'
 import StatLabels from './StatLabels'
 import { Player } from '../types'
@@ -40,7 +40,7 @@ const Home = () => {
         <Stack display={"flex"} justifyContent={"center"} alignContent={"flex-end"} maxWidth={"100%"}>
             <Stack display={"flex"} direction={"row"} justifyContent={"space-between"}>
                 <SelectStatsButton />
-                <Logout />
+                <AccountMenu />
             </Stack>
             <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
                 {state.players.length !== 0 && <StatLabels />}
