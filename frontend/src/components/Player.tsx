@@ -39,6 +39,7 @@ const SeasonStats = ({ stats, highs }: { stats: Stats, highs: HighStats }) => {
                 <Box display={state.statsToShow.show_apg ? "" : 'none'} sx={{ backgroundColor: stats.apg === highs.apg ? "lightgreen" : "" }}>{stats.apg}</Box>
                 <Box display={state.statsToShow.show_rpg ? "" : 'none'} sx={{ backgroundColor: stats.rpg === highs.rpg ? "lightgreen" : "" }}>{stats.rpg}</Box>
                 <Box display={state.statsToShow.show_fg3_pct ? "" : 'none'} sx={{ backgroundColor: stats.fg3_pct === highs.fg3_pct ? "lightgreen" : "" }}>{stats.fg3_pct}%</Box>
+                <Box display={state.statsToShow.show_fg_pct ? "" : 'none'} sx={{ backgroundColor: stats.fg_pct === highs.fg_pct ? "lightgreen" : "" }}>{stats.fg_pct}%</Box>
                 <Box display={state.statsToShow.show_ft_pct ? "" : 'none'} sx={{ backgroundColor: stats.ft_pct === highs.ft_pct ? "lightgreen" : "" }}>{stats.ft_pct}%</Box>
                 <Box display={state.statsToShow.show_spg ? "" : 'none'} sx={{ backgroundColor: stats.spg === highs.spg ? "lightgreen" : "" }}>{stats.spg}</Box>
                 <Box display={state.statsToShow.show_bpg ? "" : 'none'} sx={{ backgroundColor: stats.bpg === highs.bpg ? "lightgreen" : "" }}>{stats.bpg}</Box>
@@ -59,6 +60,7 @@ const LastTenGameStats = ({ last10Stats, highs }: { last10Stats: Stats, highs: H
                 <Box display={state.statsToShow.show_lastapg ? "" : 'none'} sx={{ backgroundColor: last10Stats.apg === highs.lastapg ? "lightgreen" : "" }}>{last10Stats.apg}</Box>
                 <Box display={state.statsToShow.show_lastrpg ? "" : 'none'} sx={{ backgroundColor: last10Stats.rpg === highs.lastrpg ? "lightgreen" : "" }}>{last10Stats.rpg}</Box>
                 <Box display={state.statsToShow.show_lastfg3_pct ? "" : 'none'} sx={{ backgroundColor: last10Stats.fg3_pct === highs.lastfg3_pct ? "lightgreen" : "" }}>{last10Stats.fg3_pct}%</Box>
+                <Box display={state.statsToShow.show_lastfg_pct ? "" : 'none'} sx={{ backgroundColor: last10Stats.fg_pct === highs.lastfg_pct ? "lightgreen" : "" }}>{last10Stats.fg_pct}%</Box>
                 <Box display={state.statsToShow.show_lastft_pct ? "" : 'none'} sx={{ backgroundColor: last10Stats.ft_pct === highs.lastft_pct ? "lightgreen" : "" }}>{last10Stats.ft_pct}%</Box>
                 <Box display={state.statsToShow.show_lastspg ? "" : 'none'} sx={{ backgroundColor: last10Stats.spg === highs.lastspg ? "lightgreen" : "" }}>{last10Stats.spg}</Box>
                 <Box display={state.statsToShow.show_lastbpg ? "" : 'none'} sx={{ backgroundColor: last10Stats.bpg === highs.lastbpg ? "lightgreen" : "" }}>{last10Stats.bpg}</Box>

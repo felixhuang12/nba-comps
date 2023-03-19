@@ -15,6 +15,7 @@ const StatLabels = () => {
                 <Box display={state.statsToShow.show_apg ? "flex" : 'none'}>APG</Box>
                 <Box display={state.statsToShow.show_rpg ? "flex" : 'none'}>RPG</Box>
                 <Box display={state.statsToShow.show_fg3_pct ? "flex" : 'none'}>3P%</Box>
+                <Box display={state.statsToShow.show_fg_pct ? "flex" : 'none'}>FG%</Box>
                 <Box display={state.statsToShow.show_ft_pct ? "flex" : 'none'}>FT%</Box>
                 <Box display={state.statsToShow.show_spg ? "flex" : 'none'}>SPG</Box>
                 <Box display={state.statsToShow.show_bpg ? "flex" : 'none'}>BPG</Box>
@@ -27,6 +28,7 @@ const StatLabels = () => {
                 <Box display={state.statsToShow.show_lastapg ? "flex" : 'none'}>APG</Box>
                 <Box display={state.statsToShow.show_lastrpg ? "flex" : 'none'}>RPG</Box>
                 <Box display={state.statsToShow.show_lastfg3_pct ? "flex" : 'none'}>3P%</Box>
+                <Box display={state.statsToShow.show_lastfg_pct ? "flex" : 'none'}>FG%</Box>
                 <Box display={state.statsToShow.show_lastft_pct ? "flex" : 'none'}>FT%</Box>
                 <Box display={state.statsToShow.show_lastspg ? "flex" : 'none'}>SPG</Box>
                 <Box display={state.statsToShow.show_lastbpg ? "flex" : 'none'}>BPG</Box>

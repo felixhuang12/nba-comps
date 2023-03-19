@@ -45,7 +45,6 @@ const SelectStats = () => {
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_lastppg} onChange={() => handleChange("show_lastppg")} />} label="Last 10 Games PPG" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_lastapg} onChange={() => handleChange("show_lastapg")} />} label="Last 10 Games APG" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_lastrpg} onChange={() => handleChange("show_lastrpg")} />} label="Last 10 Games RPG" />
-                    <FormControlLabel control={<Checkbox checked={state.statsToShow.show_lastfg2_pct} onChange={() => handleChange("show_lastfg2_pct")} />} label="Last 10 Games 2P%" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_lastfg3_pct} onChange={() => handleChange("show_lastfg3_pct")} />} label="Last 10 Games 3P%" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_lastfg_pct} onChange={() => handleChange("show_lastfg_pct")} />} label="Last 10 Games FG%" />
                     <FormControlLabel control={<Checkbox checked={state.statsToShow.show_lastft_pct} onChange={() => handleChange("show_lastft_pct")} />} label="Last 10 Games FT%" />
