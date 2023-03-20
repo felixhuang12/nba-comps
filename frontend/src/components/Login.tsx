@@ -7,16 +7,19 @@ import { LoggedInUser } from '../types'
 import { AxiosError } from 'axios'
 import { useStateValue } from '../state/state'
 import { useNavigate } from 'react-router-dom'
+import { LoadingButton } from '@mui/lab'
 
 const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [loginLoading, setLoginLoading] = useState(false)
     const [, dispatch] = useStateValue()
     const navigate = useNavigate()
 
     const handleLogin = async (event: any) => {
         event.preventDefault()
         try {
+            setLoginLoading(true)
             const user = await loginService.login({ username, password }) as LoggedInUser
             dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Success! Logged in.", alertType: 'success' } })
             dispatch({ type: "SET_LOGGED_IN_USER", payload: user })
@@ -24,6 +27,7 @@ const Login = () => {
             userService.setToken(user.token)
             navigate("/home")
         } catch (error: unknown) {
+            setLoginLoading(false)
             let message = null
             if (error instanceof AxiosError) {
                 message = error?.response?.data.error
@@ -56,10 +60,13 @@ const Login = () => {
                         autoComplete="current-password"
                     />
                     <Stack direction="row" spacing={1}>
-                        <Button variant="contained" onClick={handleLogin}>
-                            Login
-                        </Button>
+                        {loginLoading
+                            ? <LoadingButton loading variant="outlined" />
+                            : <Button variant="contained" onClick={handleLogin}>
+                                Login
+                            </Button>}
                         <Button variant="text" onClick={() => {
+                            setLoginLoading(false)
                             navigate("/register")
                         }}>
                             New? Register Here

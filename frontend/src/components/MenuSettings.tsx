@@ -26,15 +26,13 @@ const AccountMenu = () => {
         event.preventDefault()
         if (window.confirm('Delete account? All of your data will be lost.')) {
             try {
-                const response = await userService.deleteUser()
-                console.log(response)
+                await userService.deleteUser()
                 window.localStorage.removeItem('loggedInNBACompsUser')
                 dispatch({ type: "RESET_STATE", payload: initialState })
                 dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Successfully deleted account.", alertType: "success" } })
                 navigate("/")
             } catch (error: unknown) {
                 let message = null
-                console.log(error)
                 if (error instanceof AxiosError) {
                     message = error?.response?.data.error
                     if (message == null || message === '') {

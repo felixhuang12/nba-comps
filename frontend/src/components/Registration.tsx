@@ -5,27 +5,34 @@ import loginService from '../services/login'
 import { AxiosError } from 'axios'
 import { useStateValue } from '../state/state'
 import { useNavigate } from 'react-router-dom'
+import { LoadingButton } from '@mui/lab'
 
 const Registration = () => {
     const [newName, setNewName] = useState('')
     const [newUsername, setNewUsername] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [registerLoading, setRegisterLoading] = useState(false)
     const [, dispatch] = useStateValue()
     const navigate = useNavigate()
 
     const handleRegister = async (event: any) => {
         event.preventDefault()
-        if (newPassword !== confirmPassword) {
+        if (!newName || !newUsername) {
+            dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Name and username must be non-empty.", alertType: 'error' } })
+        } else if (!newPassword) {
+            dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Password must be non-empty.", alertType: 'error' } })
+        } else if (newPassword !== confirmPassword) {
             dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Passwords do not match.", alertType: 'error' } })
         } else {
             try {
+                setRegisterLoading(true)
                 const newUser = {
                     name: newName,
                     username: newUsername,
                     password: newPassword
                 }
-                const response = await loginService.createUser(newUser)
+                await loginService.createUser(newUser)
                 setNewName('')
                 setNewUsername('')
                 setNewPassword('')
@@ -33,6 +40,7 @@ const Registration = () => {
                 dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Account successfully created!", alertType: 'success' } })
                 navigate("/")
             } catch (error: unknown) {
+                setRegisterLoading(false)
                 let message = null
                 if (error instanceof AxiosError) {
                     message = error?.response?.data.error
@@ -81,10 +89,13 @@ const Registration = () => {
                         autoComplete="current-password"
                     />
                     <Stack direction="row" spacing={1}>
-                        <Button variant="contained" onClick={handleRegister}>
-                            Register
-                        </Button>
+                        {registerLoading
+                            ? <LoadingButton loading variant="outlined" />
+                            : <Button variant="contained" onClick={handleRegister}>
+                                Register
+                            </Button>}
                         <Button variant="text" onClick={() => {
+                            setRegisterLoading(false)
                             navigate("/")
                         }}>
                             Go back to login

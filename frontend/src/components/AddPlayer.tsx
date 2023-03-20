@@ -88,6 +88,8 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
         }
     }
 
+    console.log(query)
+
     if (visible) {
         return (
             <Stack spacing={2} sx={{ width: 300 }}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Stack } from '@mui/material'
+import { Stack, Skeleton } from '@mui/material'
 import { useState, useEffect } from 'react'
 import PlayerCard from './Player'
 import AccountMenu from './MenuSettings'
@@ -14,6 +14,7 @@ import SelectStatsButton from './SelectStatsButton'
 const Home = () => {
     const [state, dispatch] = useStateValue()
     const [highs, setHighs] = useState()
+    const [loadCards, setLoadCards] = useState(true)
 
     useEffect(() => {
         const cache = window.localStorage.getItem('loggedInNBACompsUser')
@@ -27,6 +28,7 @@ const Home = () => {
     useEffect(() => {
         if (state.user !== null && Object.keys(state.user).length !== 0 && state.user.username !== '')
             userService.getPlayers(state.user).then((user_players) => {
+                setLoadCards(false)
                 dispatch({ type: "SET_PLAYERS", payload: user_players })
             })
     }, [state.user, dispatch])
@@ -42,13 +44,20 @@ const Home = () => {
                 <SelectStatsButton />
                 <AccountMenu />
             </Stack>
-            <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
-                {state.players.length !== 0 && <StatLabels />}
-                {state.players.map((player: Player) => (player.id !== undefined && highs !== undefined &&
-                    <PlayerCard key={player.id} player={player} highs={highs} />)
-                )}
-                {state.players.length < 3 && <AddPlayerButton />}
-            </Stack>
+            {loadCards
+                ? <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
+                    <Skeleton variant="rectangular" width={250} height={500} sx={{ marginTop: "275px" }} />
+                    <Skeleton variant="rectangular" width={225} height={700} />
+                    <Skeleton variant="rectangular" width={225} height={700} />
+                    <Skeleton variant="rectangular" width={225} height={700} />
+                </Stack>
+                : <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
+                    {state.players.length !== 0 && <StatLabels />}
+                    {state.players.map((player: Player) => (player.id !== undefined && highs !== undefined &&
+                        <PlayerCard key={player.id} player={player} highs={highs} />)
+                    )}
+                    {state.players.length < 3 && <AddPlayerButton />}
+                </Stack>}
         </Stack>
     )
 }
