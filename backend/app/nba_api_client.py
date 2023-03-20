@@ -88,7 +88,7 @@ class DataRetriever:
         players = self.getAllActivePlayers()
         player = {}
         for p in players:
-            if p["full_name"] == full_name:
+            if str(p["full_name"]).lower() == full_name.lower():
                 player = p
                 break
         if not player:
