@@ -46,10 +46,10 @@ const Home = () => {
             </Stack>
             {loadCards
                 ? <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
-                    <Skeleton variant="rectangular" width={250} height={500} sx={{ marginTop: "275px" }} />
-                    <Skeleton variant="rectangular" width={225} height={700} />
-                    <Skeleton variant="rectangular" width={225} height={700} />
-                    <Skeleton variant="rectangular" width={225} height={700} />
+                    <Skeleton variant="rectangular" width={250} height={"70vh"} sx={{ marginTop: "275px" }} />
+                    <Skeleton variant="rectangular" width={225} height={"100vh"} />
+                    <Skeleton variant="rectangular" width={225} height={"100vh"} />
+                    <Skeleton variant="rectangular" width={225} height={"100vh"} />
                 </Stack>
                 : <Stack sx={{ p: 4 }} direction={"row"} spacing={8} justifyContent={"center"} alignItems={"flex-start"} maxWidth={"100%"} minWidth={0}>
                     {state.players.length !== 0 && <StatLabels />}
