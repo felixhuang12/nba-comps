@@ -67,7 +67,7 @@ const Search = ({ visible, setVisible }: { visible: boolean, setVisible: (b: boo
         try {
             setAddButtonLoading(true)
             const data = await userService.addPlayer(query)
-            const updatedPlayers = data.data.players
+            const updatedPlayers = data.players
             setVisible(false)
             dispatch({ type: "SET_NOTIFICATION_MESSAGE", payload: { message: "Successfully added player.", alertType: "success" } })
             dispatch({ type: "SET_PLAYERS", payload: { players: updatedPlayers } })

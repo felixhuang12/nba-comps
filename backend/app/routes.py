@@ -87,10 +87,17 @@ def deleteUser():
 @user_routes.route(f'{baseUserUrl}/<username>/getPlayers')
 def getPlayers(username: str):
     user = db.users.find_one({'username': username})
+    players = user["players"]
+    playersInfo = []
+    client = NBA()
+    for player in players:
+        player_data = client.getAggregatePlayerInfo(playerID=player)
+        playerObj = Player(id=player_data[0]["id"], commonPlayerInfo=player_data[0], seasonStatistics=player_data[1], last10Statistics=player_data[2])
+        playersInfo.append(playerObj.dict())
     print("USER PLAYERS -----------------")
-    print(user["players"])
+    print(playersInfo)
     print("------------------------------")
-    return Response(response=json.dumps({"username": user['username'], "players": user['players']}))
+    return Response(response=json.dumps({"username": user['username'], "players": playersInfo}))
 
 @user_routes.route(f'{baseUserUrl}/addplayer', methods=['POST'])
 def addPlayer():
@@ -103,14 +110,18 @@ def addPlayer():
     player_id = client.getPlayerIDFromName(player_name)
     if player_id is None:
         return Response(response=json.dumps({"error": "Player does not exist."}), status=404, content_type='application/json')
-    player_data = client.getAggregatePlayerInfo(player_id)
-    newPlayer = Player(id=player_data[0]["id"], commonPlayerInfo=player_data[0], seasonStatistics=player_data[1], last10Statistics=player_data[2])
+    # player_data = client.getAggregatePlayerInfo(player_id)
+    # newPlayer = Player(id=player_data[0]["id"], commonPlayerInfo=player_data[0], seasonStatistics=player_data[1], last10Statistics=player_data[2])
     existing_user = db.users.find_one({"username": username})
     for player in existing_user["players"]:
-        if player["id"] == newPlayer.id:
+        if player == player_id:
             return Response(response=json.dumps({"error": "Player is already added."}), status=400, content_type='application/json')
-    updated_data = db.users.find_one_and_update({'username': username}, {"$push": {"players": newPlayer.dict()}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
-    return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')
+    db.users.find_one_and_update({'username': username}, {"$push": {"players": player_id}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
+    res = getPlayers(username)
+    if res:
+        return res
+    else:
+        return Response(response=json.dumps({"error": "Player addition not successful."}), status=500, content_type='application/json')
 
 @user_routes.route(f'{baseUserUrl}/deleteplayer/<id>', methods=['DELETE'])
 def deletePlayer(id):
@@ -119,10 +130,11 @@ def deletePlayer(id):
     username = decoded_token["sub"]
     existing_user = db.users.find_one({"username": username})
     players = existing_user["players"]
-    updated_players = [player for player in players if player["id"] != int(id)]
-    updated_data = db.users.find_one_and_update({'username': username}, {"$set": {"players": updated_players}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
-    if updated_data:
-        return Response(response=json.dumps({"data": updated_data}), status=200, content_type='application/json')
+    updated_players = [player for player in players if player != int(id)]
+    db.users.find_one_and_update({'username': username}, {"$set": {"players": updated_players}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
+    res = getPlayers(username)
+    if res:
+        return res
     else:
         return Response(response=json.dumps({"error": "Update not successful."}), status=500, content_type='application/json')
 

@@ -33,4 +33,4 @@ class User(BaseModel):
     name: str
     username: str
     passwordHash: str
-    players: Optional[List[Player]] = []
+    players: Optional[List[int]] = []
