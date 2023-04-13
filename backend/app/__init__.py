@@ -1,6 +1,6 @@
 from flask import Flask
 # from flask_cors import CORS
-from .routes import app, player_routes, login_routes, user_routes, init_bcrypt, init_jwt
+from .routes import app, player_routes, login_routes, user_routes, init_bcrypt, init_jwt, get_db
 from config import Config
 from flask_jwt_extended import JWTManager
 
@@ -14,4 +14,5 @@ def create_app():
     with app.app_context():
         init_bcrypt()
         init_jwt()
+        get_db()
     return app

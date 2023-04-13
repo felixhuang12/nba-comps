@@ -89,10 +89,10 @@ def getPlayers(username: str):
     user = db.users.find_one({'username': username})
     players = user["players"]
     playersInfo = []
-    client = NBA()
-    for player in players:
-        player_data = client.getAggregatePlayerInfo(playerID=player)
-        playerObj = Player(id=player_data[0]["id"], commonPlayerInfo=player_data[0], seasonStatistics=player_data[1], last10Statistics=player_data[2])
+    for player_id in players:
+        player_data = db.players.find_one({'id': player_id}, {'_id': 0})
+        print(player_data)
+        playerObj = Player(id=player_data["id"], commonPlayerInfo=player_data["commonPlayerInfo"], seasonStatistics=player_data["seasonStatistics"], last10Statistics=player_data["last10Statistics"])
         playersInfo.append(playerObj.dict())
     print("USER PLAYERS -----------------")
     print(playersInfo)
@@ -106,17 +106,16 @@ def addPlayer():
     username = decoded_token["sub"]
     data = request.get_json()
     player_name = data["player_name"]
-    client = NBA()
-    player_id = client.getPlayerIDFromName(player_name)
-    if player_id is None:
+    existing_player = db.players.find_one({"commonPlayerInfo.name": player_name})
+    if existing_player is None:
         return Response(response=json.dumps({"error": "Player does not exist."}), status=404, content_type='application/json')
     # player_data = client.getAggregatePlayerInfo(player_id)
     # newPlayer = Player(id=player_data[0]["id"], commonPlayerInfo=player_data[0], seasonStatistics=player_data[1], last10Statistics=player_data[2])
     existing_user = db.users.find_one({"username": username})
-    for player in existing_user["players"]:
-        if player == player_id:
-            return Response(response=json.dumps({"error": "Player is already added."}), status=400, content_type='application/json')
-    db.users.find_one_and_update({'username': username}, {"$push": {"players": player_id}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
+    for player_id in existing_user["players"]:
+        if player_id == existing_player["id"]:
+            return Response(response=json.dumps({"error": "Player has already been added."}), status=400, content_type='application/json')
+    db.users.find_one_and_update({'username': username}, {"$push": {"players": existing_player["id"]}}, projection={'_id': False, 'passwordHash': False}, return_document=ReturnDocument.AFTER)
     res = getPlayers(username)
     if res:
         return res
@@ -141,6 +140,12 @@ def deletePlayer(id):
 
 @player_routes.route('/api/nba_api/active_players')
 def getAllActivePlayers():
-    client = NBA()
-    active_players = client.getAllActivePlayers()
+    active_players = []
+    for player in db.players.find({}, {'_id': 0}):
+        tmp = {'id': player['id'], 'full_name': player['commonPlayerInfo']['name']}
+        active_players.append(tmp)
+    # print(db.players.find({}, {'_id': 0}))
+    # client = NBA()
+    # active_players = client.getAllActivePlayers()
+    # active_players = db.players.find({}, {'_id': 0})
     return Response(response=json.dumps({"active_players": active_players}), status=200, content_type='application/json')

@@ -20,8 +20,8 @@ class DataRetriever:
             "id": int(df.iloc[0][0]),
             "name": df.iloc[0][3],
             "position": df.iloc[0][15],
-            "teamAbbv": df.iloc[0][20],
-            "jerseyNum": int(df.iloc[0][14])
+            "teamAbbv": df.iloc[0][20] if df.iloc[0][20] else "Unknown",
+            "jerseyNum": int(df.iloc[0][14]) if df.iloc[0][14] else "-1"
         }
         return info
 
@@ -34,7 +34,39 @@ class DataRetriever:
     def getIndividualPlayerStatAverages(self, playerID: int):
         player = playercareerstats.PlayerCareerStats(player_id=playerID)
         df = player.get_data_frames()[0]
+        if df.empty:
+            return {
+                "gp": 0,
+                "mpg": 0,
+                "ppg": 0,
+                "apg": 0,
+                "rpg": 0,
+                "ft_pct": 0,
+                "fg2_pct": 0,
+                "fg3_pct": 0,
+                "fg_pct": 0,
+                "ts_pct": 0,
+                "spg": 0,
+                "bpg": 0,
+                "tpg": 0
+            }
         current_season = df.loc[len(df)-1]
+        if current_season.empty:
+            return {
+                "gp": 0,
+                "mpg": 0,
+                "ppg": 0,
+                "apg": 0,
+                "rpg": 0,
+                "ft_pct": 0,
+                "fg2_pct": 0,
+                "fg3_pct": 0,
+                "fg_pct": 0,
+                "ts_pct": 0,
+                "spg": 0,
+                "bpg": 0,
+                "tpg": 0
+            }
         gp = current_season["GP"]
         stats = {
             "gp": gp.item(),
@@ -62,6 +94,23 @@ class DataRetriever:
     def getIndividualPlayerLast10GamesStatAverages(self, playerID: int):
         player = playerdashboardbylastngames.PlayerDashboardByLastNGames(player_id=playerID)
         player_last10 = player.last10_player_dashboard.get_data_frame()
+        if player_last10.empty:
+            return {
+                "gp": 0,
+                "mpg": 0,
+                "ppg": 0,
+                "apg": 0,
+                "rpg": 0,
+                "ft_pct": 0,
+                "fg2_pct": 0,
+                "fg3_pct": 0,
+                "fg_pct": 0,
+                "ts_pct": 0,
+                "spg": 0,
+                "bpg": 0,
+                "tpg": 0
+            }
+        
         player_stats = player_last10.loc[0]
         gp = player_stats["GP"]
         stats = {
