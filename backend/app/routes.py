@@ -9,6 +9,7 @@ from flask_jwt_extended import decode_token
 from flask_jwt_extended import JWTManager
 from .nba_api_client import DataRetriever as NBA
 from datetime import timedelta
+from string import capwords
 
 app = Flask(__name__)
 
@@ -106,11 +107,10 @@ def addPlayer():
     username = decoded_token["sub"]
     data = request.get_json()
     player_name = data["player_name"]
-    existing_player = db.players.find_one({"commonPlayerInfo.name": player_name})
+    full_name = capwords(player_name.lower())
+    existing_player = db.players.find_one({"commonPlayerInfo.name": full_name})
     if existing_player is None:
         return Response(response=json.dumps({"error": "Player does not exist."}), status=404, content_type='application/json')
-    # player_data = client.getAggregatePlayerInfo(player_id)
-    # newPlayer = Player(id=player_data[0]["id"], commonPlayerInfo=player_data[0], seasonStatistics=player_data[1], last10Statistics=player_data[2])
     existing_user = db.users.find_one({"username": username})
     for player_id in existing_user["players"]:
         if player_id == existing_player["id"]:
