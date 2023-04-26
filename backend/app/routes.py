@@ -144,8 +144,4 @@ def getAllActivePlayers():
     for player in db.players.find({}, {'_id': 0}):
         tmp = {'id': player['id'], 'full_name': player['commonPlayerInfo']['name']}
         active_players.append(tmp)
-    # print(db.players.find({}, {'_id': 0}))
-    # client = NBA()
-    # active_players = client.getAllActivePlayers()
-    # active_players = db.players.find({}, {'_id': 0})
     return Response(response=json.dumps({"active_players": active_players}), status=200, content_type='application/json')
